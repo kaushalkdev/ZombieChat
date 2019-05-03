@@ -1,7 +1,9 @@
 package com.example.zombiechat;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +15,19 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -27,9 +35,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<Chat> chatsList;
+    List<String>chatid;
 
-    public ChatAdapter(List<Chat> chatsList) {
+    public ChatAdapter(List<Chat> chatsList, List<String> chatid) {
+
         this.chatsList = chatsList;
+        this.chatid = chatid;
     }
 
     @NonNull
@@ -43,59 +54,79 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ChatHolder holder, int i) {
 
-        if (chatsList.get(i).getSendBy().equals(mAuth.getCurrentUser().getUid())) {
-            holder.text.setText(chatsList.get(i).getMessage());
-            db.collection("users")
-                    .document(chatsList.get(i).getSentTO())
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            holder.username.setText(documentSnapshot.get("name").toString());
-                            holder.setImgae(documentSnapshot.get("image").toString());
+
+        db.collection("chatbox")
+                .document(chatid.get(i))
+                .collection("chats")
+                .orderBy("time", Query.Direction.DESCENDING)
+                .limit(1)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (queryDocumentSnapshots != null){
+                            for(QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots){
+                                if(Objects.equals(documentSnapshot.get("sendBy"), Objects.requireNonNull(mAuth.getCurrentUser()).getUid())){
+                                    holder.text.setText(Objects.requireNonNull(documentSnapshot.get("message")).toString());
+                                    db.collection("users")
+                                            .document( Objects.requireNonNull(documentSnapshot.get("sentTO")).toString())
+                                            .get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    holder.username.setText(documentSnapshot.get("name").toString());
+                                                    holder.setImgae(documentSnapshot.get("image").toString());
 
 
-                            //for item click to open chat
-                            SingleUserModel singleUserModel = new SingleUserModel();
-                            singleUserModel.setImage(documentSnapshot.get("image").toString());
-                            singleUserModel.setName(documentSnapshot.get("name").toString());
-                            singleUserModel.setUserid(documentSnapshot.get("userid").toString());
-                            singleUserModel.setSex(documentSnapshot.get("sex").toString());
+                                                    //for item click to open chat
+                                                    SingleUserModel singleUserModel = new SingleUserModel();
+                                                    singleUserModel.setImage(documentSnapshot.get("image").toString());
+                                                    singleUserModel.setName(documentSnapshot.get("name").toString());
+                                                    singleUserModel.setUserid(documentSnapshot.get("userid").toString());
+                                                    singleUserModel.setSex(documentSnapshot.get("sex").toString());
 
-                            holder.setOnclick(singleUserModel);
+                                                    holder.setOnclick(singleUserModel);
+                                                }
+                                            });
+                                }else{
+                                    holder.text.setText(documentSnapshot.get("message").toString());
+                                    db.collection("users")
+                                            .document(documentSnapshot.get("sendBy").toString())
+                                            .get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    holder.username.setText(documentSnapshot.get("name").toString());
+                                                    holder.setImgae(documentSnapshot.get("image").toString());
+
+
+                                                    //for item click to open chat
+                                                    SingleUserModel singleUserModel = new SingleUserModel();
+                                                    singleUserModel.setImage(documentSnapshot.get("image").toString());
+                                                    singleUserModel.setName(documentSnapshot.get("name").toString());
+                                                    singleUserModel.setUserid(documentSnapshot.get("userid").toString());
+                                                    singleUserModel.setSex(documentSnapshot.get("sex").toString());
+
+                                                    holder.setOnclick(singleUserModel);
+                                                }
+                                            });
+
+                                }
+
+                            }
                         }
-                    });
 
-        }else{
-            holder.text.setText(chatsList.get(i).getMessage());
-            db.collection("users")
-                    .document(chatsList.get(i).getSendBy())
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            holder.username.setText(documentSnapshot.get("name").toString());
-                            holder.setImgae(documentSnapshot.get("image").toString());
+                    }
+                });
 
 
-                            //for item click to open chat
-                            SingleUserModel singleUserModel = new SingleUserModel();
-                            singleUserModel.setImage(documentSnapshot.get("image").toString());
-                            singleUserModel.setName(documentSnapshot.get("name").toString());
-                            singleUserModel.setUserid(documentSnapshot.get("userid").toString());
-                            singleUserModel.setSex(documentSnapshot.get("sex").toString());
-
-                            holder.setOnclick(singleUserModel);
-                        }
-                    });
-        }
 
 
     }
 
     @Override
     public int getItemCount() {
-        return chatsList.size();
+        return chatid.size();
     }
 
 

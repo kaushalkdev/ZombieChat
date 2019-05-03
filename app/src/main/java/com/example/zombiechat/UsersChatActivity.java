@@ -198,7 +198,7 @@ public class UsersChatActivity extends AppCompatActivity {
                 .orderBy("time", Query.Direction.DESCENDING)
                 .whereEqualTo("sendBy",uid)
                 .limit(1)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                .addSnapshotListener(this,new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                         for(QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots){
@@ -240,7 +240,7 @@ public class UsersChatActivity extends AppCompatActivity {
             mTTS.stop();
             mTTS.shutdown();
         }
-
+adapter.stopListening();
         super.onDestroy();
     }
 
@@ -311,6 +311,7 @@ public class UsersChatActivity extends AppCompatActivity {
         }
 
 
+        //added for updating the chat ui when new message received or sent
 
         @Override
         public void onDataChanged() {

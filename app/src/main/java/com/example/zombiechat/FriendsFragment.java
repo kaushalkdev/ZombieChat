@@ -2,8 +2,10 @@ package com.example.zombiechat;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,11 +20,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -34,6 +38,8 @@ public class FriendsFragment extends Fragment {
     private RecyclerView mrecyclerview;
     private FriendsRecyclerAdapter madapter;
     public static final String TAG = "FriendsFragment";
+    final List<String> userId = new ArrayList<>();
+    ListenerRegistration registration;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,64 +56,66 @@ public class FriendsFragment extends Fragment {
         mrecyclerview.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
 
-
-
-        final List<String> userId = new ArrayList<>();
-        db.collection("friends")
-                .whereEqualTo("userid", mAuth.getCurrentUser().getUid())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-
-                            userId.add(documentSnapshot.get("friendId").toString());
-
-                            final List<SingleUserModel> userModels =  new ArrayList<>();
-
-
-
-
-
-                            db.collection("users").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                    if(e != null){
-                                        return;
-                                    }
-
-
-                                    for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
-                                        SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
-                                        if( !singleUserModel.getUserid().equals(mAuth.getCurrentUser().getUid())) {
-                                            userModels.add(singleUserModel);
-                                        }
-                                    }
-                                    madapter = new FriendsRecyclerAdapter(userModels,userId);
-                                    mrecyclerview.setAdapter(madapter);
-
-
-
-                                }
-                            });
-
-
-
-
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(view.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
         return view;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void onStart() {
+        super.onStart();
 
 
+        registration = db.collection("friends")
+                .whereEqualTo("userid", Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (queryDocumentSnapshots != null) {
+                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
+                                userId.add(Objects.requireNonNull(documentSnapshot.get("friendId")).toString());
+
+                                final List<SingleUserModel> userModels = new ArrayList<>();
+
+
+                                db.collection("users")
+                                        .addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                                if (e != null) {
+                                                    return;
+                                                }
+
+
+                                                for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
+                                                    SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
+                                                    if (!singleUserModel.getUserid().equals(mAuth.getCurrentUser().getUid())) {
+                                                        userModels.add(singleUserModel);
+                                                    }
+                                                }
+                                                madapter = new FriendsRecyclerAdapter(userModels, userId);
+                                                mrecyclerview.setAdapter(madapter);
+
+
+                                            }
+                                        });
+
+
+                            }
+                        }
+
+                    }
+                })
+        ;
+
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        userId.clear();
+        registration.remove();
+    }
 }
 
