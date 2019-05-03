@@ -1,9 +1,11 @@
 package com.example.zombiechat;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -34,12 +37,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    List<Chat> chatsList;
-    List<String>chatid;
+    Activity activity;
+    List<String> chatid;
+    ListenerRegistration registration;
 
-    public ChatAdapter(List<Chat> chatsList, List<String> chatid) {
+    public ChatAdapter(FragmentActivity activity, List<String> chatid) {
 
-        this.chatsList = chatsList;
+        this.activity = activity;
         this.chatid = chatid;
     }
 
@@ -55,21 +59,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
     public void onBindViewHolder(@NonNull final ChatHolder holder, int i) {
 
 
-        db.collection("chatbox")
+          db.collection("chatbox")
                 .document(chatid.get(i))
                 .collection("chats")
                 .orderBy("time", Query.Direction.DESCENDING)
                 .limit(1)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                .addSnapshotListener(activity,new EventListener<QuerySnapshot>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (queryDocumentSnapshots != null){
-                            for(QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots){
-                                if(Objects.equals(documentSnapshot.get("sendBy"), Objects.requireNonNull(mAuth.getCurrentUser()).getUid())){
+                        if (queryDocumentSnapshots != null) {
+                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                if (Objects.equals(documentSnapshot.get("sendBy"), Objects.requireNonNull(mAuth.getCurrentUser()).getUid())) {
                                     holder.text.setText(Objects.requireNonNull(documentSnapshot.get("message")).toString());
                                     db.collection("users")
-                                            .document( Objects.requireNonNull(documentSnapshot.get("sentTO")).toString())
+                                            .document(Objects.requireNonNull(documentSnapshot.get("sentTO")).toString())
                                             .get()
                                             .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override
@@ -88,7 +92,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
                                                     holder.setOnclick(singleUserModel);
                                                 }
                                             });
-                                }else{
+                                } else {
                                     holder.text.setText(documentSnapshot.get("message").toString());
                                     db.collection("users")
                                             .document(documentSnapshot.get("sendBy").toString())
@@ -120,12 +124,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
                 });
 
 
-
-
     }
 
     @Override
     public int getItemCount() {
+
+
         return chatid.size();
     }
 
@@ -185,4 +189,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
 
         }
     }
+
+
+
 }

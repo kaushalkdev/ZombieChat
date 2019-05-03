@@ -277,7 +277,7 @@ public class AccountSetting extends AppCompatActivity {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                 if (e != null) {
-                    Toast.makeText(AccountSetting.this, "error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
                     return;
                 }
                 if (documentSnapshot.exists()) {

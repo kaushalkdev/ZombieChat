@@ -9,11 +9,13 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,7 +40,7 @@ public class FriendsFragment extends Fragment {
     private RecyclerView mrecyclerview;
     private FriendsRecyclerAdapter madapter;
     public static final String TAG = "FriendsFragment";
-    final List<String> userId = new ArrayList<>();
+    final List<String> friendid = new ArrayList<>();
     ListenerRegistration registration;
 
     @Override
@@ -65,21 +67,24 @@ public class FriendsFragment extends Fragment {
         super.onStart();
 
 
-        registration = db.collection("friends")
+      registration =  db.collection("friends")
                 .whereEqualTo("userid", Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                 .addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (queryDocumentSnapshots != null) {
-                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        if(queryDocumentSnapshots != null){
+                            friendid.clear();
+                            for (QueryDocumentSnapshot documentSnapshot :  queryDocumentSnapshots) {
 
-                                userId.add(Objects.requireNonNull(documentSnapshot.get("friendId")).toString());
+                                friendid.add(Objects.requireNonNull(documentSnapshot.get("friendId")).toString());
+
 
                                 final List<SingleUserModel> userModels = new ArrayList<>();
 
 
                                 db.collection("users")
-                                        .addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
+                                        .whereEqualTo("userid",documentSnapshot.get("friendId"))
+                                        .addSnapshotListener(Objects.requireNonNull(getActivity()),new EventListener<QuerySnapshot>() {
                                             @Override
                                             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                                                 if (e != null) {
@@ -89,11 +94,12 @@ public class FriendsFragment extends Fragment {
 
                                                 for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
                                                     SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
-                                                    if (!singleUserModel.getUserid().equals(mAuth.getCurrentUser().getUid())) {
+                                                    Log.d(TAG, "single user: "+ singleUserModel.getName());
+
                                                         userModels.add(singleUserModel);
-                                                    }
+
                                                 }
-                                                madapter = new FriendsRecyclerAdapter(userModels, userId);
+                                                madapter = new FriendsRecyclerAdapter( friendid);
                                                 mrecyclerview.setAdapter(madapter);
 
 
@@ -114,8 +120,12 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        userId.clear();
+//        userId.clear();
         registration.remove();
     }
+
+
+
+
 }
 

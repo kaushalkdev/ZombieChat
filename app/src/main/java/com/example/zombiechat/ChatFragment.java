@@ -100,7 +100,7 @@ public class ChatFragment extends Fragment {
                                                     }
                                                 }
 
-                                                adapter = new ChatAdapter(chatsList,chatid);
+                                                adapter = new ChatAdapter(getActivity(),chatid);
                                                 adapter.notifyDataSetChanged();
                                                 mrecyclerview.setAdapter(adapter);
                                             }

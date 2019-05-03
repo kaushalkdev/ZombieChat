@@ -1,7 +1,9 @@
 package com.example.zombiechat;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +16,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
@@ -22,6 +26,9 @@ import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -38,25 +45,46 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
         this.userId = userId;
     }
 
+    public FriendsRecyclerAdapter(List<String> friendid) {
+        this.userId = friendid;
+    }
+
     @NonNull
     @Override
     public friendsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_single_layout,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_single_layout, viewGroup, false);
         return new friendsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final friendsViewHolder mViewHolder, int i) {
-        if(userId.contains(userModels.get(i).getUserid())){
-
-            mViewHolder.username.setText(userModels.get(i).getName());
-            mViewHolder.userstatus.setText(userModels.get(i).getStatus());
-            mViewHolder.setImage(userModels.get(i).getImage());
-            mViewHolder.setOnclick(userModels.get(i));
 
 
+        db.collection("users")
+                .whereEqualTo("userid", userId.get(i))
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            return;
+                        }
 
-        }
+
+                        for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
+                            SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
+                            Log.d(TAG, "single user: " + singleUserModel.getName());
+
+                            mViewHolder.username.setText(singleUserModel.getName());
+                            mViewHolder.userstatus.setText(singleUserModel.getStatus());
+                            mViewHolder.setImage(singleUserModel.getImage());
+                            mViewHolder.setOnclick(singleUserModel);
+
+                        }
+
+                    }
+                });
+
     }
 
     @Override
@@ -64,12 +92,13 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
         return userId.size();
     }
 }
-class friendsViewHolder extends RecyclerView.ViewHolder{
 
-    private static final String TAG ="mViewHolder" ;
+class friendsViewHolder extends RecyclerView.ViewHolder {
+
+    private static final String TAG = "mViewHolder";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    TextView username,userstatus;
+    TextView username, userstatus;
     CircleImageView userimage;
     Button acceptBtn, rejectBtn;
 
@@ -112,14 +141,14 @@ class friendsViewHolder extends RecyclerView.ViewHolder{
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                                for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
-                                    Intent chatIntent = new Intent(itemView.getContext(),UsersChatActivity.class);
-                                    chatIntent.putExtra("uid",singleUserModel.getUserid());
-                                    chatIntent.putExtra("image",singleUserModel.getImage());
-                                    chatIntent.putExtra("name",singleUserModel.getName());
-                                    chatIntent.putExtra("sex",singleUserModel.getSex());
-                                    chatIntent.putExtra("chatid",documentSnapshot.get("chatid").toString());
+                                    Intent chatIntent = new Intent(itemView.getContext(), UsersChatActivity.class);
+                                    chatIntent.putExtra("uid", singleUserModel.getUserid());
+                                    chatIntent.putExtra("image", singleUserModel.getImage());
+                                    chatIntent.putExtra("name", singleUserModel.getName());
+                                    chatIntent.putExtra("sex", singleUserModel.getSex());
+                                    chatIntent.putExtra("chatid", documentSnapshot.get("chatid").toString());
                                     itemView.getContext().startActivity(chatIntent);
                                 }
                             }

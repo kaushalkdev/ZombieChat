@@ -21,6 +21,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -67,7 +69,7 @@ public class RequestRecyclerAdaper extends FirestoreRecyclerAdapter<RequestModel
                         holder.username.setText(singleUserModel.getName());
                         holder.userstatus.setText(singleUserModel.getStatus());
                         holder.setImage(singleUserModel.getImage());
-                        holder.setOnClick(singleUserModel.getUserid(),mAuth.getCurrentUser().getUid(),others,friends);
+                        holder.setOnClick(singleUserModel.getUserid(), mAuth.getCurrentUser().getUid(), others, friends);
 
                     }
                 });
@@ -79,7 +81,7 @@ public class RequestRecyclerAdaper extends FirestoreRecyclerAdapter<RequestModel
     @Override
     public mViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.single_request_layout,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.single_request_layout, viewGroup, false);
 
         return new mViewHolder(view);
     }
@@ -118,7 +120,7 @@ public class RequestRecyclerAdaper extends FirestoreRecyclerAdapter<RequestModel
         }
 
 
-        public void setOnClick(final String s, final String uid, final Map<String, String> others, final Map<String, String> friends) {
+        public void setOnClick(final String otheruid, final String uid, final Map<String, String> others, final Map<String, String> friends) {
 
 
             acceptBtn.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +137,7 @@ public class RequestRecyclerAdaper extends FirestoreRecyclerAdapter<RequestModel
 
                                     db.collection("requests")
                                             .whereEqualTo("sentTo", uid)
-                                            .whereEqualTo("sendBy", s)
+                                            .whereEqualTo("sendBy", otheruid)
                                             .get()
                                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                                 @Override
@@ -155,8 +157,8 @@ public class RequestRecyclerAdaper extends FirestoreRecyclerAdapter<RequestModel
 
                                                                 final HashMap<String, String> chatidmap = new HashMap<>();
                                                                 chatidmap.put("chatid", uuid);
-                                                                chatidmap.put(uid,uid);
-                                                                chatidmap.put(s,s);
+                                                                chatidmap.put(uid, uid);
+                                                                chatidmap.put(otheruid, otheruid);
 
 
                                                                 db.collection("chatids")
@@ -166,6 +168,18 @@ public class RequestRecyclerAdaper extends FirestoreRecyclerAdapter<RequestModel
                                                                         Toast.makeText(itemView.getContext(), "You are Friends", Toast.LENGTH_SHORT).show();
                                                                     }
                                                                 });
+
+                                                                final HashMap<String, String> chatmap = new HashMap<>();
+                                                                chatmap.put("message","hi");
+                                                                chatmap.put("sentTO", otheruid);
+                                                                chatmap.put("sendBy", mAuth.getCurrentUser().getUid());
+                                                                Date currentTime = Calendar.getInstance().getTime();
+                                                                chatmap.put("time", currentTime.toString());
+
+                                                                db.collection("chatbox")
+                                                                        .document(uuid)
+                                                                        .collection("chats")
+                                                                        .add(chatmap);
                                                             }
                                                         });
 
@@ -176,8 +190,6 @@ public class RequestRecyclerAdaper extends FirestoreRecyclerAdapter<RequestModel
 
                                 }
                             });
-
-
 
 
                 }
