@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.zombiechat.account.SingleUserModel;
+import com.example.zombiechat.account.UserProfile;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
