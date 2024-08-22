@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.zombiechat.R;
-import com.example.zombiechat.account.SingleUserModel;
-import com.example.zombiechat.account.UserProfile;
+import com.example.zombiechat.account.data.models.UserModel;
+import com.example.zombiechat.account.view.UserProfile;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -22,9 +22,9 @@ public class AllUsersRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
 
 
     private static final String TAG = "AllUsersRecyclerAdapter";
-    List<SingleUserModel> userModels;
+    List<UserModel> userModels;
 
-    public AllUsersRecyclerAdapter(List<SingleUserModel> userModels, String uid) {
+    public AllUsersRecyclerAdapter(List<UserModel> userModels, String uid) {
         this.userModels = userModels;
     }
 

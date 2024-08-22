@@ -1,6 +1,8 @@
-package com.example.zombiechat.account;
+package com.example.zombiechat.account.data.models;
 
-public class SingleUserModel {
+import android.support.annotation.NonNull;
+
+public class UserModel {
 
     private String image;
     private String name;
@@ -8,25 +10,21 @@ public class SingleUserModel {
     private String status;
     private String userid;
 
-    public SingleUserModel() {
+    public UserModel() {
     }
 
-    public SingleUserModel(String image, String name, String sex, String status, String userid) {
-        this.image = image;
-        this.name = name;
-        this.sex = sex;
-        this.status = status;
-        this.userid = userid;
-    }
 
+    @NonNull
     public String getUserid() {
         return userid;
     }
+
 
     public void setUserid(String userid) {
         this.userid = userid;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
@@ -35,6 +33,7 @@ public class SingleUserModel {
         this.name = name;
     }
 
+    @NonNull
     public String getImage() {
         return image;
     }
@@ -43,6 +42,7 @@ public class SingleUserModel {
         this.image = image;
     }
 
+    @NonNull
     public String getStatus() {
         return status;
     }
@@ -51,6 +51,7 @@ public class SingleUserModel {
         this.status = status;
     }
 
+    @NonNull
     public String getSex() {
         return sex;
     }

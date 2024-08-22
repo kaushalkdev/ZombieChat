@@ -1,4 +1,4 @@
-package com.example.zombiechat.account;
+package com.example.zombiechat.account.view;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -114,37 +114,35 @@ public class AccountSetting extends AppCompatActivity {
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EditText  sexEditText = dialoglayout.findViewById(R.id.input_name_status_text);
+                        EditText sexEditText = dialoglayout.findViewById(R.id.input_name_status_text);
 
                         String sex = sexEditText.getText().toString().toLowerCase();
 
+
+                        // updating user gender
                         if (sexEditText.getText().toString().equals("")) {
                             Toast.makeText(AccountSetting.this, "empty text", Toast.LENGTH_SHORT).show();
 
-                        }else if(sex.matches("male")|| sex.matches("female"))
-                            {
-                                DocumentReference documentRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
+                        } else if (sex.matches("male") || sex.matches("female")) {
+                            DocumentReference documentRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
 
 
-                                documentRef
-                                        .update("sex", sexEditText.getText().toString().toLowerCase())
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Error updating document", e);
-                                            }
-                                        });
+                            documentRef
+                                    .update("sex", sexEditText.getText().toString().toLowerCase())
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Error updating document", e);
+                                        }
+                                    });
 
-                            }
-
-
-                        else {
+                        } else {
 
                             Toast.makeText(AccountSetting.this, "invalid values", Toast.LENGTH_SHORT).show();
 
@@ -265,7 +263,7 @@ public class AccountSetting extends AppCompatActivity {
         super.onStart();
 
 
-        //method 1
+        // get user details from cloud firestore
         DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -287,8 +285,6 @@ public class AccountSetting extends AppCompatActivity {
                 }
             }
         });
-
-
 
 
     }
@@ -326,7 +322,7 @@ public class AccountSetting extends AppCompatActivity {
         final StorageReference filePath = mStorageRef.child("profile_pictures").child(uid + ".jpg");
 
 
-        //add file on Firebase and got Download Link
+        // add file on Firebase and got Download Link
         filePath.putFile(resultUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {

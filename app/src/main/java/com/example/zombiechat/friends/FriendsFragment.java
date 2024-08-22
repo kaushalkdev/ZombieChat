@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zombiechat.R;
-import com.example.zombiechat.account.SingleUserModel;
+import com.example.zombiechat.account.data.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -74,7 +74,7 @@ public class FriendsFragment extends Fragment {
                                 friendid.add(Objects.requireNonNull(documentSnapshot.get("friendId")).toString());
 
 
-                                final List<SingleUserModel> userModels = new ArrayList<>();
+                                final List<UserModel> userModels = new ArrayList<>();
 
 
                                 db.collection("users")
@@ -88,10 +88,10 @@ public class FriendsFragment extends Fragment {
 
 
                                                 for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
-                                                    SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
-                                                    Log.d(TAG, "single user: "+ singleUserModel.getName());
+                                                    UserModel userModel = documentSnapshot.toObject(UserModel.class);
+                                                    Log.d(TAG, "single user: "+ userModel.getName());
 
-                                                        userModels.add(singleUserModel);
+                                                        userModels.add(userModel);
 
                                                 }
                                                 madapter = new FriendsRecyclerAdapter( friendid);

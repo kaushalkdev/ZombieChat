@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.zombiechat.R;
-import com.example.zombiechat.account.SingleUserModel;
+import com.example.zombiechat.account.data.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,7 +29,7 @@ public class AllusersActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private RecyclerView mrecyclerview;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private SingleUserModel singleuser;
+    private UserModel singleuser;
     private AllUsersRecyclerAdapter madapter;
     ListenerRegistration registration;
 
@@ -53,7 +53,7 @@ public class AllusersActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        final List<SingleUserModel> userModels = new ArrayList<>();
+        final List<UserModel> userModels = new ArrayList<>();
 
 
         registration = db.collection("users").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -67,9 +67,9 @@ public class AllusersActivity extends AppCompatActivity {
 
                 assert queryDocumentSnapshots != null;
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
-                    if (!singleUserModel.getUserid().equals(mAuth.getCurrentUser().getUid())) {
-                        userModels.add(singleUserModel);
+                    UserModel userModel = documentSnapshot.toObject(UserModel.class);
+                    if (!userModel.getUserid().equals(mAuth.getCurrentUser().getUid())) {
+                        userModels.add(userModel);
                     }
                 }
                 madapter = new AllUsersRecyclerAdapter(userModels, mAuth.getCurrentUser().getUid());

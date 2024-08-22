@@ -1,4 +1,4 @@
-package com.example.zombiechat.account;
+package com.example.zombiechat.account.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -63,6 +63,7 @@ public class UserProfile extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
+        // check if the user is already friend or request is already sent
         db.collection("requests")
                 .whereEqualTo("sendBy", mAuth.getCurrentUser().getUid())
                 .whereEqualTo("sentTo", uid)
@@ -79,6 +80,8 @@ public class UserProfile extends AppCompatActivity {
                 });
 
         final Map<String, String> userMap = new HashMap<>();
+
+        // get user details from cloud firestore
         db.collection("users")
                 .document(uid)
                 .get()
@@ -100,6 +103,7 @@ public class UserProfile extends AppCompatActivity {
                     }
                 });
 
+        // find all the friends of the user
         db.collection("friends")
                 .whereEqualTo("userid", mAuth.getCurrentUser().getUid())
                 .whereEqualTo("friendId", uid)
@@ -127,6 +131,7 @@ public class UserProfile extends AppCompatActivity {
                 userMap.put("sentTo", uid);
                 userMap.put("requeststatus", "sendRequest");
 
+                // send friend request
                 db.collection("requests")
                         .add(userMap)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

@@ -11,8 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.zombiechat.account.AccountSetting;
-import com.example.zombiechat.account.SigninActivity;
+import com.example.zombiechat.account.view.AccountSetting;
+import com.example.zombiechat.account.view.SigninActivity;
 import com.example.zombiechat.friends.AllusersActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;

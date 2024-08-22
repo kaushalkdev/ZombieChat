@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.zombiechat.R;
-import com.example.zombiechat.account.SingleUserModel;
+import com.example.zombiechat.account.data.models.UserModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -82,13 +82,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
 
 
                                                     //for item click to open chat
-                                                    SingleUserModel singleUserModel = new SingleUserModel();
-                                                    singleUserModel.setImage(documentSnapshot.get("image").toString());
-                                                    singleUserModel.setName(documentSnapshot.get("name").toString());
-                                                    singleUserModel.setUserid(documentSnapshot.get("userid").toString());
-                                                    singleUserModel.setSex(documentSnapshot.get("sex").toString());
+                                                    UserModel userModel = new UserModel();
+                                                    userModel.setImage(documentSnapshot.get("image").toString());
+                                                    userModel.setName(documentSnapshot.get("name").toString());
+                                                    userModel.setUserid(documentSnapshot.get("userid").toString());
+                                                    userModel.setSex(documentSnapshot.get("sex").toString());
 
-                                                    holder.setOnclick(singleUserModel);
+                                                    holder.setOnclick(userModel);
                                                 }
                                             });
                                 } else {
@@ -104,13 +104,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
 
 
                                                     //for item click to open chat
-                                                    SingleUserModel singleUserModel = new SingleUserModel();
-                                                    singleUserModel.setImage(documentSnapshot.get("image").toString());
-                                                    singleUserModel.setName(documentSnapshot.get("name").toString());
-                                                    singleUserModel.setUserid(documentSnapshot.get("userid").toString());
-                                                    singleUserModel.setSex(documentSnapshot.get("sex").toString());
+                                                    UserModel userModel = new UserModel();
+                                                    userModel.setImage(documentSnapshot.get("image").toString());
+                                                    userModel.setName(documentSnapshot.get("name").toString());
+                                                    userModel.setUserid(documentSnapshot.get("userid").toString());
+                                                    userModel.setSex(documentSnapshot.get("sex").toString());
 
-                                                    holder.setOnclick(singleUserModel);
+                                                    holder.setOnclick(userModel);
                                                 }
                                             });
 
@@ -157,13 +157,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
                     .into(userimage);
         }
 
-        public void setOnclick(final SingleUserModel singleUserModel) {
+        public void setOnclick(final UserModel userModel) {
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     db.collection("chatids")
-                            .whereEqualTo(singleUserModel.getUserid(), singleUserModel.getUserid())
+                            .whereEqualTo(userModel.getUserid(), userModel.getUserid())
                             .whereEqualTo(mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().getUid())
                             .get()
                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -173,10 +173,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
                                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
                                         Intent chatIntent = new Intent(itemView.getContext(), UsersChatActivity.class);
-                                        chatIntent.putExtra("uid", singleUserModel.getUserid());
-                                        chatIntent.putExtra("image", singleUserModel.getImage());
-                                        chatIntent.putExtra("name", singleUserModel.getName());
-                                        chatIntent.putExtra("sex", singleUserModel.getSex());
+                                        chatIntent.putExtra("uid", userModel.getUserid());
+                                        chatIntent.putExtra("image", userModel.getImage());
+                                        chatIntent.putExtra("name", userModel.getName());
+                                        chatIntent.putExtra("sex", userModel.getSex());
                                         chatIntent.putExtra("chatid", documentSnapshot.get("chatid").toString());
                                         itemView.getContext().startActivity(chatIntent);
                                     }
