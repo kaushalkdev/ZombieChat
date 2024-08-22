@@ -86,7 +86,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
                                                     userModel.setImage(documentSnapshot.get("image").toString());
                                                     userModel.setName(documentSnapshot.get("name").toString());
                                                     userModel.setUserid(documentSnapshot.get("userid").toString());
-                                                    userModel.setSex(documentSnapshot.get("sex").toString());
+                                                    userModel.setGender(documentSnapshot.get("sex").toString());
 
                                                     holder.setOnclick(userModel);
                                                 }
@@ -108,7 +108,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
                                                     userModel.setImage(documentSnapshot.get("image").toString());
                                                     userModel.setName(documentSnapshot.get("name").toString());
                                                     userModel.setUserid(documentSnapshot.get("userid").toString());
-                                                    userModel.setSex(documentSnapshot.get("sex").toString());
+                                                    userModel.setGender(documentSnapshot.get("sex").toString());
 
                                                     holder.setOnclick(userModel);
                                                 }
@@ -176,7 +176,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
                                         chatIntent.putExtra("uid", userModel.getUserid());
                                         chatIntent.putExtra("image", userModel.getImage());
                                         chatIntent.putExtra("name", userModel.getName());
-                                        chatIntent.putExtra("sex", userModel.getSex());
+                                        chatIntent.putExtra("sex", userModel.getGender());
                                         chatIntent.putExtra("chatid", documentSnapshot.get("chatid").toString());
                                         itemView.getContext().startActivity(chatIntent);
                                     }

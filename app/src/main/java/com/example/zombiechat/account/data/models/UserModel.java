@@ -6,7 +6,7 @@ public class UserModel {
 
     private String image;
     private String name;
-    private String sex;
+    private String gender;
     private String status;
     private String userid;
 
@@ -52,11 +52,11 @@ public class UserModel {
     }
 
     @NonNull
-    public String getSex() {
-        return sex;
+    public String getGender() {
+        return gender;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

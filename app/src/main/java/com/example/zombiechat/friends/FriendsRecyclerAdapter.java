@@ -146,7 +146,7 @@ class friendsViewHolder extends RecyclerView.ViewHolder {
                                     chatIntent.putExtra("uid", userModel.getUserid());
                                     chatIntent.putExtra("image", userModel.getImage());
                                     chatIntent.putExtra("name", userModel.getName());
-                                    chatIntent.putExtra("sex", userModel.getSex());
+                                    chatIntent.putExtra("sex", userModel.getGender());
                                     chatIntent.putExtra("chatid", documentSnapshot.get("chatid").toString());
                                     itemView.getContext().startActivity(chatIntent);
                                 }
