@@ -1,4 +1,4 @@
-package com.example.zombiechat;
+package com.example.zombiechat.friends;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.example.zombiechat.R;
 import com.example.zombiechat.account.SingleUserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
@@ -52,39 +53,31 @@ public class AllusersActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        final List<SingleUserModel> userModels =  new ArrayList<>();
-
-
-
+        final List<SingleUserModel> userModels = new ArrayList<>();
 
 
         registration = db.collection("users").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if(e != null){
-                    Toast.makeText(AllusersActivity.this, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                if (e != null) {
+                    Toast.makeText(AllusersActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
 
                 assert queryDocumentSnapshots != null;
-                for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
-                    if( !singleUserModel.getUserid().equals(mAuth.getCurrentUser().getUid())) {
+                    if (!singleUserModel.getUserid().equals(mAuth.getCurrentUser().getUid())) {
                         userModels.add(singleUserModel);
                     }
                 }
-                madapter = new AllUsersRecyclerAdapter(userModels,mAuth.getCurrentUser().getUid());
+                madapter = new AllUsersRecyclerAdapter(userModels, mAuth.getCurrentUser().getUid());
                 mrecyclerview.setAdapter(madapter);
-
 
 
             }
         });
-
-
-
-
 
 
     }

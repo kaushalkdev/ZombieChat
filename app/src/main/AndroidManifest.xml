@@ -17,9 +17,9 @@
             android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".account.UserProfile"
-            android:parentActivityName=".AllusersActivity" />
+            android:parentActivityName=".friends.AllusersActivity" />
         <activity
-            android:name=".AllusersActivity"
+            android:name=".friends.AllusersActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

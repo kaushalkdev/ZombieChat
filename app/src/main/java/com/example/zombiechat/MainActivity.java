@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.zombiechat.account.AccountSetting;
 import com.example.zombiechat.account.SigninActivity;
+import com.example.zombiechat.friends.AllusersActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;

@@ -1,4 +1,4 @@
-package com.example.zombiechat;
+package com.example.zombiechat.friends;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.zombiechat.R;
 import com.example.zombiechat.account.SingleUserModel;
 import com.example.zombiechat.account.UserProfile;
 import com.squareup.picasso.Picasso;
