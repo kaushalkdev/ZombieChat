@@ -1,4 +1,4 @@
-package com.example.zombiechat;
+package com.example.zombiechat.friends;
 
 import android.content.Intent;
 import android.os.Build;
@@ -11,11 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.zombiechat.R;
+import com.example.zombiechat.account.data.models.UserModel;
+import com.example.zombiechat.chat.UsersChatActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -23,9 +24,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -37,10 +36,10 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
     public static final String TAG = "FriendsRecyclerAdapter";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private List<SingleUserModel> userModels;
+    private List<UserModel> userModels;
     List<String> userId;
 
-    public FriendsRecyclerAdapter(List<SingleUserModel> userModels, List<String> userId) {
+    public FriendsRecyclerAdapter(List<UserModel> userModels, List<String> userId) {
         this.userModels = userModels;
         this.userId = userId;
     }
@@ -72,13 +71,13 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
 
 
                         for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
-                            SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
-                            Log.d(TAG, "single user: " + singleUserModel.getName());
+                            UserModel userModel = documentSnapshot.toObject(UserModel.class);
+                            Log.d(TAG, "single user: " + userModel.getName());
 
-                            mViewHolder.username.setText(singleUserModel.getName());
-                            mViewHolder.userstatus.setText(singleUserModel.getStatus());
-                            mViewHolder.setImage(singleUserModel.getImage());
-                            mViewHolder.setOnclick(singleUserModel);
+                            mViewHolder.username.setText(userModel.getName());
+                            mViewHolder.userstatus.setText(userModel.getStatus());
+                            mViewHolder.setImage(userModel.getImage());
+                            mViewHolder.setOnclick(userModel);
 
                         }
 
@@ -127,14 +126,14 @@ class friendsViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void setOnclick(final SingleUserModel singleUserModel) {
+    public void setOnclick(final UserModel userModel) {
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 db.collection("chatids")
-                        .whereEqualTo(singleUserModel.getUserid(), singleUserModel.getUserid())
+                        .whereEqualTo(userModel.getUserid(), userModel.getUserid())
                         .whereEqualTo(mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().getUid())
                         .get()
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -144,10 +143,10 @@ class friendsViewHolder extends RecyclerView.ViewHolder {
                                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
                                     Intent chatIntent = new Intent(itemView.getContext(), UsersChatActivity.class);
-                                    chatIntent.putExtra("uid", singleUserModel.getUserid());
-                                    chatIntent.putExtra("image", singleUserModel.getImage());
-                                    chatIntent.putExtra("name", singleUserModel.getName());
-                                    chatIntent.putExtra("sex", singleUserModel.getSex());
+                                    chatIntent.putExtra("uid", userModel.getUserid());
+                                    chatIntent.putExtra("image", userModel.getImage());
+                                    chatIntent.putExtra("name", userModel.getName());
+                                    chatIntent.putExtra("sex", userModel.getGender());
                                     chatIntent.putExtra("chatid", documentSnapshot.get("chatid").toString());
                                     itemView.getContext().startActivity(chatIntent);
                                 }

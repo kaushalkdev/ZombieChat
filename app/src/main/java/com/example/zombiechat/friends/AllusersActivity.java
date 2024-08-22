@@ -1,33 +1,24 @@
-package com.example.zombiechat;
+package com.example.zombiechat.friends;
 
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.zombiechat.R;
+import com.example.zombiechat.account.data.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthSettings;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -38,7 +29,7 @@ public class AllusersActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private RecyclerView mrecyclerview;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private SingleUserModel singleuser;
+    private UserModel singleuser;
     private AllUsersRecyclerAdapter madapter;
     ListenerRegistration registration;
 
@@ -62,39 +53,31 @@ public class AllusersActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        final List<SingleUserModel> userModels =  new ArrayList<>();
-
-
-
+        final List<UserModel> userModels = new ArrayList<>();
 
 
         registration = db.collection("users").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if(e != null){
-                    Toast.makeText(AllusersActivity.this, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                if (e != null) {
+                    Toast.makeText(AllusersActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
 
                 assert queryDocumentSnapshots != null;
-                for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
-                    SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
-                    if( !singleUserModel.getUserid().equals(mAuth.getCurrentUser().getUid())) {
-                        userModels.add(singleUserModel);
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    UserModel userModel = documentSnapshot.toObject(UserModel.class);
+                    if (!userModel.getUserid().equals(mAuth.getCurrentUser().getUid())) {
+                        userModels.add(userModel);
                     }
                 }
-                madapter = new AllUsersRecyclerAdapter(userModels,mAuth.getCurrentUser().getUid());
+                madapter = new AllUsersRecyclerAdapter(userModels, mAuth.getCurrentUser().getUid());
                 mrecyclerview.setAdapter(madapter);
-
 
 
             }
         });
-
-
-
-
 
 
     }

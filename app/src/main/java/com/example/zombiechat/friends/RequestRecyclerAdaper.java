@@ -1,4 +1,4 @@
-package com.example.zombiechat;
+package com.example.zombiechat.friends;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.zombiechat.R;
+import com.example.zombiechat.account.data.models.UserModel;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,20 +58,20 @@ public class RequestRecyclerAdaper extends FirestoreRecyclerAdapter<RequestModel
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
 
-                        SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
+                        UserModel userModel = documentSnapshot.toObject(UserModel.class);
 
                         final Map<String, String> friends = new HashMap<>(), others = new HashMap<>();
                         friends.put("userid", mAuth.getCurrentUser().getUid());
-                        friends.put("friendId", singleUserModel.getUserid());
+                        friends.put("friendId", userModel.getUserid());
 
                         others.put("friendId", mAuth.getCurrentUser().getUid());
-                        others.put("userid", singleUserModel.getUserid());
+                        others.put("userid", userModel.getUserid());
 
 
-                        holder.username.setText(singleUserModel.getName());
-                        holder.userstatus.setText(singleUserModel.getStatus());
-                        holder.setImage(singleUserModel.getImage());
-                        holder.setOnClick(singleUserModel.getUserid(), mAuth.getCurrentUser().getUid(), others, friends);
+                        holder.username.setText(userModel.getName());
+                        holder.userstatus.setText(userModel.getStatus());
+                        holder.setImage(userModel.getImage());
+                        holder.setOnClick(userModel.getUserid(), mAuth.getCurrentUser().getUid(), others, friends);
 
                     }
                 });

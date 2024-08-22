@@ -1,10 +1,7 @@
-package com.example.zombiechat;
+package com.example.zombiechat.friends;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,11 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.zombiechat.R;
+import com.example.zombiechat.account.data.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -79,7 +74,7 @@ public class FriendsFragment extends Fragment {
                                 friendid.add(Objects.requireNonNull(documentSnapshot.get("friendId")).toString());
 
 
-                                final List<SingleUserModel> userModels = new ArrayList<>();
+                                final List<UserModel> userModels = new ArrayList<>();
 
 
                                 db.collection("users")
@@ -93,10 +88,10 @@ public class FriendsFragment extends Fragment {
 
 
                                                 for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
-                                                    SingleUserModel singleUserModel = documentSnapshot.toObject(SingleUserModel.class);
-                                                    Log.d(TAG, "single user: "+ singleUserModel.getName());
+                                                    UserModel userModel = documentSnapshot.toObject(UserModel.class);
+                                                    Log.d(TAG, "single user: "+ userModel.getName());
 
-                                                        userModels.add(singleUserModel);
+                                                        userModels.add(userModel);
 
                                                 }
                                                 madapter = new FriendsRecyclerAdapter( friendid);

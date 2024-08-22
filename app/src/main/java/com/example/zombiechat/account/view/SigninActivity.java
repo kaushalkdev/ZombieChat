@@ -1,4 +1,4 @@
-package com.example.zombiechat;
+package com.example.zombiechat.account.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.zombiechat.MainActivity;
+import com.example.zombiechat.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -25,18 +27,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class SigninActivity extends AppCompatActivity {
 
     private SignInButton msignin;
-    private static final String TAG = "Signin" ;
+    private static final String TAG = "Signin";
     private FirebaseAuth mAuth;
-    private static final int RC_SIGN_IN =123 ;
+    private static final int RC_SIGN_IN = 123;
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressDialog mdialog;
 
@@ -69,11 +69,11 @@ public class SigninActivity extends AppCompatActivity {
         msignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              if(mAuth.getCurrentUser()==null) {
-                  signIn();
-              }else {
-                  Toast.makeText(SigninActivity.this, "Already Signed in", Toast.LENGTH_SHORT).show();
-              }
+                if (mAuth.getCurrentUser() == null) {
+                    signIn();
+                } else {
+                    Toast.makeText(SigninActivity.this, "Already Signed in", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -83,13 +83,12 @@ public class SigninActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser !=null) {
+        if (currentUser != null) {
             Intent mainIntent = new Intent(SigninActivity.this, MainActivity.class);
             startActivity(mainIntent);
             finish();
         }
     }
-
 
 
     private void signIn() {
@@ -103,7 +102,6 @@ public class SigninActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
 
-
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -113,7 +111,7 @@ public class SigninActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-                Toast.makeText(this, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 // ...
             }
         }
@@ -139,44 +137,42 @@ public class SigninActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             boolean newuser = task.getResult().getAdditionalUserInfo().isNewUser();
                             FirebaseUser user = mAuth.getCurrentUser();
-                           GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SigninActivity.this);
-                            SharedPreferences sharedPreferences = getSharedPreferences(account.getId(),MODE_PRIVATE);
-                            String gender = sharedPreferences.getString("gender","male");
-                            if(newuser){
+                            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SigninActivity.this);
+                            SharedPreferences sharedPreferences = getSharedPreferences(account.getId(), MODE_PRIVATE);
+                            String gender = sharedPreferences.getString("gender", "male");
+                            if (newuser) {
                                 mdialog.dismiss();
 
-                                HashMap<String,String> usermap = new HashMap<>();
-                                usermap.put("userid",mAuth.getCurrentUser().getUid());
-                                usermap.put("name",user.getDisplayName());
-                                usermap.put("image",user.getPhotoUrl().toString());
-                                usermap.put("status","Hey there i am using Zombie chat");
-                                usermap.put("sex",gender);
+                                HashMap<String, String> usermap = new HashMap<>();
+                                usermap.put("userid", mAuth.getCurrentUser().getUid());
+                                usermap.put("name", user.getDisplayName());
+                                usermap.put("image", user.getPhotoUrl().toString());
+                                usermap.put("status", "Hey there i am using Zombie chat");
+                                usermap.put("sex", gender);
 
+
+                                // create a new account for first time user
                                 db.collection("users")
                                         .document(mAuth.getCurrentUser().getUid())
 
                                         .set(usermap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Toast.makeText(SigninActivity.this, "Setup your Account...", Toast.LENGTH_LONG).show();
-                                        Intent mainIntent = new Intent(SigninActivity.this,MainActivity.class);
-                                        startActivity(mainIntent);
-                                        finish();
-                                    }
-                                });
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(SigninActivity.this, "Setup your Account...", Toast.LENGTH_LONG).show();
+                                                Intent mainIntent = new Intent(SigninActivity.this, MainActivity.class);
+                                                startActivity(mainIntent);
+                                                finish();
+                                            }
+                                        });
 
 
-                            }else
-                                {
+                            } else {
                                 mdialog.dismiss();
 
-                                    Intent mainIntent = new Intent(SigninActivity.this,MainActivity.class);
-                                    startActivity(mainIntent);
-                                    finish();
+                                Intent mainIntent = new Intent(SigninActivity.this, MainActivity.class);
+                                startActivity(mainIntent);
+                                finish();
                             }
-
-
-
 
 
                         } else {
@@ -189,13 +185,12 @@ public class SigninActivity extends AppCompatActivity {
                         // ...
                     }
                 }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SigninActivity.this, "Authentication Failed : "+ e.getMessage().trim(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(SigninActivity.this, "Authentication Failed : " + e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
- 
 }

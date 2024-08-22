@@ -13,13 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UsersChatActivity"
+        <activity android:name=".chat.UsersChatActivity"
             android:parentActivityName=".MainActivity"></activity>
         <activity
-            android:name=".UserProfile"
-            android:parentActivityName=".AllusersActivity" />
+            android:name=".account.view.UserProfile"
+            android:parentActivityName=".friends.AllusersActivity" />
         <activity
-            android:name=".AllusersActivity"
+            android:name=".friends.AllusersActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -28,9 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SigninActivity" />
+        <activity android:name=".account.view.SigninActivity" />
         <activity
-            android:name=".AccountSetting"
+            android:name=".account.view.AccountSetting"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

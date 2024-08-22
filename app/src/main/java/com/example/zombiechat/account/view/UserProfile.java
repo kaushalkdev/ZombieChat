@@ -1,35 +1,24 @@
-package com.example.zombiechat;
+package com.example.zombiechat.account.view;
 
-import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.example.zombiechat.R;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -74,6 +63,7 @@ public class UserProfile extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
+        // check if the user is already friend or request is already sent
         db.collection("requests")
                 .whereEqualTo("sendBy", mAuth.getCurrentUser().getUid())
                 .whereEqualTo("sentTo", uid)
@@ -90,6 +80,8 @@ public class UserProfile extends AppCompatActivity {
                 });
 
         final Map<String, String> userMap = new HashMap<>();
+
+        // get user details from cloud firestore
         db.collection("users")
                 .document(uid)
                 .get()
@@ -111,6 +103,7 @@ public class UserProfile extends AppCompatActivity {
                     }
                 });
 
+        // find all the friends of the user
         db.collection("friends")
                 .whereEqualTo("userid", mAuth.getCurrentUser().getUid())
                 .whereEqualTo("friendId", uid)
@@ -138,6 +131,7 @@ public class UserProfile extends AppCompatActivity {
                 userMap.put("sentTo", uid);
                 userMap.put("requeststatus", "sendRequest");
 
+                // send friend request
                 db.collection("requests")
                         .add(userMap)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

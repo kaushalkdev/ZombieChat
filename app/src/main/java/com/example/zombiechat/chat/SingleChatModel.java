@@ -1,4 +1,4 @@
-package com.example.zombiechat;
+package com.example.zombiechat.chat;
 
 public class SingleChatModel {
     String message;

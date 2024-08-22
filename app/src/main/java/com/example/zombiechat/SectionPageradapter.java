@@ -4,6 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.example.zombiechat.chat.ChatFragment;
+import com.example.zombiechat.friends.FriendsFragment;
+import com.example.zombiechat.friends.RequestFragment;
+
 public class SectionPageradapter extends FragmentPagerAdapter {
     public SectionPageradapter(FragmentManager fm) {
         super(fm);

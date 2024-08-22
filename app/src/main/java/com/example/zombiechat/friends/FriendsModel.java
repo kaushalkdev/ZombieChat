@@ -1,4 +1,4 @@
-package com.example.zombiechat;
+package com.example.zombiechat.friends;
 
 public class FriendsModel {
     String friendId;
