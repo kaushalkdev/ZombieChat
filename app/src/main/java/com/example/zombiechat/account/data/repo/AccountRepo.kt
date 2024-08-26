@@ -1,5 +1,6 @@
 package com.example.zombiechat.account.data.repo
 
+import android.net.Uri
 import com.example.zombiechat.account.data.models.UserModel
 import com.example.zombiechat.constants.api.collections.Collections
 import com.google.firebase.auth.FirebaseAuth
@@ -8,13 +9,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
-interface AccountRepo {
-
-    fun updateUser(model: UserModel): Boolean
-    fun uploadUserImage(imagePath: String): String
-}
-
-class AccountRepoImpl : AccountRepo {
+class AccountRepo {
 
     private var userCollection: CollectionReference =
         FirebaseFirestore.getInstance().collection(Collections.userCollection)
@@ -23,7 +18,7 @@ class AccountRepoImpl : AccountRepo {
 
     private var currentUser: DocumentReference? = null
 
-    private var storage: FirebaseStorage = FirebaseStorage.getInstance()
+    private var storageRef = FirebaseStorage.getInstance().reference
 
 
     fun getCurrentUser() {
@@ -33,7 +28,7 @@ class AccountRepoImpl : AccountRepo {
     }
 
 
-    override fun updateUser(model: UserModel): Boolean {
+    fun updateUser(model: UserModel): Boolean {
 
         if (currentUser != null) {
             currentUser!!.set(model)
@@ -46,8 +41,16 @@ class AccountRepoImpl : AccountRepo {
     }
 
 
-    override fun uploadUserImage(imagePath: String): String {
-        TODO("Not yet implemented")
+    fun uploadUserImage(imagePath: Uri): String {
+//        TODO udpate the logic to fix
+        storageRef.child("profileImages/${currentAuth}.jpg").putFile(imagePath)
+            .addOnSuccessListener {
+                return@addOnSuccessListener
+            }.addOnFailureListener {
+                return@addOnFailureListener
+            }
+
+        return ""
     }
 }
 

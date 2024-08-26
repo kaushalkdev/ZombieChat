@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zombiechat.R;
+import com.example.zombiechat.account.data.repo.AccountRepo;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -52,15 +53,14 @@ public class AccountSetting extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private ProgressDialog mProgress;
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private StorageReference mStorageRef;
 
+    private AccountRepo repo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_setting);
+
 
         //toolbar
         mToolbar = findViewById(R.id.account_setting_appbar);
@@ -82,14 +82,10 @@ public class AccountSetting extends AppCompatActivity {
         //proress dialog
         mProgress = new ProgressDialog(this);
 
-        //cloud firestore
-        db = FirebaseFirestore.getInstance();
+        repo = new AccountRepo();
 
-        //firebase auth
-        mAuth = FirebaseAuth.getInstance();
 
-        //firebase reference
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+
 
         medituserimage.setOnClickListener(new View.OnClickListener() {
             @Override
