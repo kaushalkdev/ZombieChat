@@ -1,6 +1,8 @@
 package com.example.zombiechat.account.view;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.zombiechat.R;
 import com.example.zombiechat.account.data.repo.AccountRepo;
+import com.example.zombiechat.account.viewModel.UserViewModel;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -83,8 +86,7 @@ public class AccountSetting extends AppCompatActivity {
         mProgress = new ProgressDialog(this);
 
         repo = new AccountRepo();
-
-
+        ViewModelProvider userViewModel = new ViewModelProvider(UserViewModel(), this).get(UserViewModel.class);
 
 
         medituserimage.setOnClickListener(new View.OnClickListener() {
@@ -253,6 +255,7 @@ public class AccountSetting extends AppCompatActivity {
         });
 
     }
+
 
     @Override
     protected void onStart() {
