@@ -1,11 +1,12 @@
 package com.example.zombiechat.account.viewModel
 
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelStore
 import com.example.zombiechat.account.data.models.UserModel
 
 
-class UserViewModel : ViewModelStore() {
+class UserViewModel : ViewModel() {
     private val userLiveData: MutableLiveData<UserModel> = MutableLiveData<UserModel>()
 
 
