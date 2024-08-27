@@ -23,7 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.squareup.picasso.Picasso
-import com.theartofdev.edmodo.cropper.CropImage
+
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.Locale
 
@@ -73,9 +73,6 @@ class AccountSetting : AppCompatActivity() {
 //        userViewModel =  ViewModelProvider()
 
 
-
-
-
         medituserimage?.setOnClickListener(View.OnClickListener {
             val imageIntent = Intent()
             imageIntent.setType("image/*")
@@ -119,8 +116,7 @@ class AccountSetting : AppCompatActivity() {
                 } else {
                     Toast.makeText(this@AccountSetting, "invalid values", Toast.LENGTH_SHORT).show()
                 }
-            }
-                .setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
+            }.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             builder.show()
         })
         meditusername?.setOnClickListener(View.OnClickListener {
@@ -153,8 +149,7 @@ class AccountSetting : AppCompatActivity() {
 //                                        }
 //                                    });
                 }
-            }
-                .setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
+            }.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             builder.show()
         })
 
@@ -192,8 +187,7 @@ class AccountSetting : AppCompatActivity() {
 //                                        }
 //                                    });
                 }
-            }
-                .setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
+            }.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             builder.show()
         })
     }
@@ -235,21 +229,22 @@ class AccountSetting : AppCompatActivity() {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             val imageUri = data!!.data
             // start cropping activity for pre-acquired image saved on the device
-            CropImage.activity(imageUri)
-                .setAspectRatio(1, 1)
-                .setMinCropWindowSize(500, 500)
-                .start(this)
+
+//            CropImage.activity(imageUri)
+//                .setAspectRatio(1, 1)
+//                .setMinCropWindowSize(500, 500)
+//                .start(this)
         }
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            val result = CropImage.getActivityResult(data)
-            if (resultCode == RESULT_OK) {
-                val resultUri = result.uri
-                uploadImage(resultUri)
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                val error = result.error
-            }
-        }
+//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+//            val result = CropImage.getActivityResult(data)
+//            if (resultCode == RESULT_OK) {
+//                val resultUri = result.uri
+//                uploadImage(resultUri)
+//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//                val error = result.error
+//            }
+//        }
     }
 
     private fun uploadImage(resultUri: Uri) {
