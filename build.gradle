@@ -6,15 +6,15 @@ buildscript {
     }
     repositories {
         google()
-        jcenter()
-        // Add repository
+        mavenCentral()
+
         maven {
             url 'https://maven.fabric.io/public'
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
-        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.android.tools.build:gradle:8.5.2'
+        classpath 'com.google.gms:google-services:4.4.2'
         //Add dependency
         classpath 'io.fabric.tools:gradle:1.28.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -26,11 +26,11 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         
     }
 }
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
