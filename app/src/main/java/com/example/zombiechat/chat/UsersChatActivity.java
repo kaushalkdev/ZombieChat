@@ -1,12 +1,7 @@
 package com.example.zombiechat.chat;
 
 import android.speech.tts.TextToSpeech;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,9 +12,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.zombiechat.R;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,7 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.annotation.Nullable;
+
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -72,8 +70,7 @@ public class UsersChatActivity extends AppCompatActivity {
                 if (status == TextToSpeech.SUCCESS) {
                     int result = mTTS.setLanguage(Locale.US);
 
-                    if (result == TextToSpeech.LANG_MISSING_DATA
-                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                         Log.e("TTS", "Language not supported");
                     }
                 } else {
@@ -112,11 +109,7 @@ public class UsersChatActivity extends AppCompatActivity {
 
         muserimage = findViewById(R.id.user_image);
         //setting image
-        Picasso.with(getApplicationContext())
-                .load(image)
-                .error(R.drawable.default_user)
-                .placeholder(R.drawable.default_user)
-                .into(muserimage);
+        Picasso.with(getApplicationContext()).load(image).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(muserimage);
 
 
         //button and edit text
@@ -143,10 +136,7 @@ public class UsersChatActivity extends AppCompatActivity {
                     Date currentTime = Calendar.getInstance().getTime();
                     chatmap.put("time", currentTime.toString());
 
-                    db.collection("chatbox")
-                            .document(chatid)
-                            .collection("chats")
-                            .add(chatmap);
+                    db.collection("chatbox").document(chatid).collection("chats").add(chatmap);
 
 
                 }
@@ -167,14 +157,9 @@ public class UsersChatActivity extends AppCompatActivity {
         final String uid = getIntent().getStringExtra("uid");
 
 
-        Query query = db.collection("chatbox")
-                .document(chatid)
-                .collection("chats")
-                .orderBy("time", Query.Direction.ASCENDING);
+        Query query = db.collection("chatbox").document(chatid).collection("chats").orderBy("time", Query.Direction.ASCENDING);
 
-        FirestoreRecyclerOptions<SingleChatModel> options = new FirestoreRecyclerOptions.Builder<SingleChatModel>()
-                .setQuery(query, SingleChatModel.class)
-                .build();
+        FirestoreRecyclerOptions<SingleChatModel> options = new FirestoreRecyclerOptions.Builder<SingleChatModel>().setQuery(query, SingleChatModel.class).build();
 
         adapter = new UsersChatAdapter(options);
         adapter.onDataChanged();
@@ -184,21 +169,15 @@ public class UsersChatActivity extends AppCompatActivity {
 
         //for speaking message only female voice currently
 
-        registration = db.collection("chatbox")
-                .document(chatid)
-                .collection("chats")
-                .orderBy("time", Query.Direction.DESCENDING)
-                .whereEqualTo("sendBy", uid)
-                .limit(1)
-                .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+        registration = db.collection("chatbox").document(chatid).collection("chats").orderBy("time", Query.Direction.DESCENDING).whereEqualTo("sendBy", uid).limit(1).addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
-                            speak(documentSnapshot.get("message").toString());
-                        }
-                    }
-                });
+                    speak(documentSnapshot.get("message").toString());
+                }
+            }
+        });
 
 
     }

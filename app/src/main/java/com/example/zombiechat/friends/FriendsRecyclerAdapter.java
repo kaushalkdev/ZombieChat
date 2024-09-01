@@ -2,15 +2,18 @@ package com.example.zombiechat.friends;
 
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
 import com.example.zombiechat.account.data.models.UserModel;
@@ -27,7 +30,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -59,30 +61,28 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
     public void onBindViewHolder(@NonNull final friendsViewHolder mViewHolder, int i) {
 
 
-        db.collection("users")
-                .whereEqualTo("userid", userId.get(i))
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            return;
-                        }
+        db.collection("users").whereEqualTo("userid", userId.get(i)).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    return;
+                }
 
 
-                        for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
-                            UserModel userModel = documentSnapshot.toObject(UserModel.class);
-                            Log.d(TAG, "single user: " + userModel.getName());
+                for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
+                    UserModel userModel = documentSnapshot.toObject(UserModel.class);
+                    Log.d(TAG, "single user: " + userModel.getName());
 
-                            mViewHolder.username.setText(userModel.getName());
-                            mViewHolder.userstatus.setText(userModel.getStatus());
-                            mViewHolder.setImage(userModel.getImage());
-                            mViewHolder.setOnclick(userModel);
+                    mViewHolder.username.setText(userModel.getName());
+                    mViewHolder.userstatus.setText(userModel.getStatus());
+                    mViewHolder.setImage(userModel.getImage());
+                    mViewHolder.setOnclick(userModel);
 
-                        }
+                }
 
-                    }
-                });
+            }
+        });
 
     }
 
@@ -117,11 +117,7 @@ class friendsViewHolder extends RecyclerView.ViewHolder {
 
     public void setImage(String image) {
 
-        Picasso.with(itemView.getContext())
-                .load(image)
-                .error(R.drawable.default_user)
-                .placeholder(R.drawable.default_user)
-                .into(userimage);
+        Picasso.with(itemView.getContext()).load(image).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(userimage);
 
     }
 
@@ -132,26 +128,22 @@ class friendsViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
 
-                db.collection("chatids")
-                        .whereEqualTo(userModel.getUserid(), userModel.getUserid())
-                        .whereEqualTo(mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().getUid())
-                        .get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                db.collection("chatids").whereEqualTo(userModel.getUserid(), userModel.getUserid()).whereEqualTo(mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
-                                    Intent chatIntent = new Intent(itemView.getContext(), UsersChatActivity.class);
-                                    chatIntent.putExtra("uid", userModel.getUserid());
-                                    chatIntent.putExtra("image", userModel.getImage());
-                                    chatIntent.putExtra("name", userModel.getName());
-                                    chatIntent.putExtra("sex", userModel.getGender());
-                                    chatIntent.putExtra("chatid", documentSnapshot.get("chatid").toString());
-                                    itemView.getContext().startActivity(chatIntent);
-                                }
-                            }
-                        });
+                            Intent chatIntent = new Intent(itemView.getContext(), UsersChatActivity.class);
+                            chatIntent.putExtra("uid", userModel.getUserid());
+                            chatIntent.putExtra("image", userModel.getImage());
+                            chatIntent.putExtra("name", userModel.getName());
+                            chatIntent.putExtra("sex", userModel.getGender());
+                            chatIntent.putExtra("chatid", documentSnapshot.get("chatid").toString());
+                            itemView.getContext().startActivity(chatIntent);
+                        }
+                    }
+                });
 
 
             }

@@ -2,14 +2,16 @@ package com.example.zombiechat.chat;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,12 +22,8 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Nullable;
 
 
 public class ChatFragment extends Fragment {
@@ -57,12 +55,12 @@ public class ChatFragment extends Fragment {
         super.onStart();
         mAuth = FirebaseAuth.getInstance();
 
-         registration = db.collection("chatids")
+        registration = db.collection("chatids")
                 .whereEqualTo(mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().getUid())
-                .addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
+                .addSnapshotListener(requireActivity(), new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (queryDocumentSnapshots != null){
+                        if (queryDocumentSnapshots != null) {
                             chatid.clear();
                             for (final QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                 Log.d(TAG, "chatid: " + documentSnapshot.get("chatid"));
@@ -73,10 +71,10 @@ public class ChatFragment extends Fragment {
                                         .collection("chats")
                                         .orderBy("time", Query.Direction.DESCENDING)
                                         .limit(1)
-                                        .addSnapshotListener(Objects.requireNonNull(getActivity()),new EventListener<QuerySnapshot>() {
+                                        .addSnapshotListener(requireActivity(), new EventListener<QuerySnapshot>() {
                                             @Override
                                             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                                if (queryDocumentSnapshots != null){
+                                                if (queryDocumentSnapshots != null) {
                                                     for (QueryDocumentSnapshot documentSnapshot1 : queryDocumentSnapshots) {
 
                                                         Chat chats = new Chat();
@@ -92,7 +90,7 @@ public class ChatFragment extends Fragment {
                                                     }
                                                 }
 
-                                                adapter = new ChatAdapter(getActivity(),chatid);
+                                                adapter = new ChatAdapter(getActivity(), chatid);
                                                 adapter.notifyDataSetChanged();
                                                 mrecyclerview.setAdapter(adapter);
                                             }
@@ -100,12 +98,6 @@ public class ChatFragment extends Fragment {
 
                             }
                         }
-
-
-
-
-
-
 
 
                     }

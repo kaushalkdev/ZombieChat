@@ -1,15 +1,17 @@
 package com.example.zombiechat;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.zombiechat.account.view.AccountSetting;
 import com.example.zombiechat.account.view.SigninActivity;
@@ -20,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       //setting tabs
+        //setting tabs
         mToolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Zombie Chat");
@@ -50,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         mSectionPagerAdapter = new SectionPageradapter(getSupportFragmentManager());
         mviewPager.setAdapter(mSectionPagerAdapter);
         mTablayout.setupWithViewPager(mviewPager);
-
 
 
         //need for firebase signout
@@ -68,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         //google client needed for google signout
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-
 
 
     }
@@ -119,18 +119,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (item.getItemId() == R.id.main_account_setting) {
-             accountSettingsIntent();
+            accountSettingsIntent();
         }
 
         if (item.getItemId() == R.id.all_users) {
-             allUserIntent();
+            allUserIntent();
         }
 
 
         return true;
     }
-
-
 
 
     //All Used methods

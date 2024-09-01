@@ -17,11 +17,7 @@ import androidx.appcompat.widget.Toolbar
 import com.example.zombiechat.R
 import com.example.zombiechat.account.data.repo.AccountRepo
 import com.example.zombiechat.account.viewModel.UserViewModel
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.squareup.picasso.Picasso
+
 
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.Locale

@@ -2,14 +2,16 @@ package com.example.zombiechat.friends;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
 import com.example.zombiechat.account.data.models.UserModel;
@@ -24,8 +26,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.annotation.Nullable;
 
 
 public class FriendsFragment extends Fragment {
@@ -62,14 +62,14 @@ public class FriendsFragment extends Fragment {
         super.onStart();
 
 
-      registration =  db.collection("friends")
+        registration = db.collection("friends")
                 .whereEqualTo("userid", Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
-                .addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
+                .addSnapshotListener(requireActivity(), new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if(queryDocumentSnapshots != null){
+                        if (queryDocumentSnapshots != null) {
                             friendid.clear();
-                            for (QueryDocumentSnapshot documentSnapshot :  queryDocumentSnapshots) {
+                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
                                 friendid.add(Objects.requireNonNull(documentSnapshot.get("friendId")).toString());
 
@@ -78,8 +78,8 @@ public class FriendsFragment extends Fragment {
 
 
                                 db.collection("users")
-                                        .whereEqualTo("userid",documentSnapshot.get("friendId"))
-                                        .addSnapshotListener(Objects.requireNonNull(getActivity()),new EventListener<QuerySnapshot>() {
+                                        .whereEqualTo("userid", documentSnapshot.get("friendId"))
+                                        .addSnapshotListener(requireActivity(), new EventListener<QuerySnapshot>() {
                                             @Override
                                             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                                                 if (e != null) {
@@ -89,12 +89,12 @@ public class FriendsFragment extends Fragment {
 
                                                 for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
                                                     UserModel userModel = documentSnapshot.toObject(UserModel.class);
-                                                    Log.d(TAG, "single user: "+ userModel.getName());
+                                                    Log.d(TAG, "single user: " + userModel.getName());
 
-                                                        userModels.add(userModel);
+                                                    userModels.add(userModel);
 
                                                 }
-                                                madapter = new FriendsRecyclerAdapter( friendid);
+                                                madapter = new FriendsRecyclerAdapter(friendid);
                                                 mrecyclerview.setAdapter(madapter);
 
 
@@ -118,8 +118,6 @@ public class FriendsFragment extends Fragment {
 //        userId.clear();
         registration.remove();
     }
-
-
 
 
 }

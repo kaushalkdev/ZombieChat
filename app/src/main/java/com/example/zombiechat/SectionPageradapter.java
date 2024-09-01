@@ -1,8 +1,11 @@
 package com.example.zombiechat;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.zombiechat.chat.ChatFragment;
 import com.example.zombiechat.friends.FriendsFragment;
@@ -13,27 +16,15 @@ public class SectionPageradapter extends FragmentPagerAdapter {
         super(fm);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                ChatFragment ChatTab = new ChatFragment();
-                return ChatTab;
-
-
-            case 1:
-                FriendsFragment FriendsTab = new FriendsFragment();
-                return FriendsTab;
-            case 2:
-
-                RequestFragment RequestTab = new RequestFragment();
-                return RequestTab;
-
-
-            default:
-                return null;
-
-        }
+        return switch (position) {
+            case 0 -> new ChatFragment();
+            case 1 -> new FriendsFragment();
+            case 2 -> new RequestFragment();
+            default -> null;
+        };
     }
 
     @Override
@@ -44,17 +35,12 @@ public class SectionPageradapter extends FragmentPagerAdapter {
 
     public CharSequence getPageTitle(int position) {
 
-        switch (position) {
-            case 0:
-                return "CHATS";
-            case 1:
-                return "FRIENDS";
-            case 2:
-                return "REQUESTS";
-
-            default:
-                return null;
-        }
+        return switch (position) {
+            case 0 -> "CHATS";
+            case 1 -> "FRIENDS";
+            case 2 -> "REQUESTS";
+            default -> null;
+        };
 
     }
 }

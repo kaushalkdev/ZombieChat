@@ -1,7 +1,6 @@
 package com.example.zombiechat.friends;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +9,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.zombiechat.R;
 import com.example.zombiechat.account.data.models.UserModel;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -152,38 +152,38 @@ public class RequestRecyclerAdaper extends FirestoreRecyclerAdapter<RequestModel
                                                         db.collection("requests")
                                                                 .document(docId)
                                                                 .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-
-                                                                final String uuid = UUID.randomUUID().toString().replace("-", "");
-
-                                                                final HashMap<String, String> chatidmap = new HashMap<>();
-                                                                chatidmap.put("chatid", uuid);
-                                                                chatidmap.put(uid, uid);
-                                                                chatidmap.put(otheruid, otheruid);
-
-
-                                                                db.collection("chatids")
-                                                                        .add(chatidmap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                                     @Override
-                                                                    public void onSuccess(DocumentReference documentReference) {
-                                                                        Toast.makeText(itemView.getContext(), "You are Friends", Toast.LENGTH_SHORT).show();
+                                                                    public void onSuccess(Void aVoid) {
+
+                                                                        final String uuid = UUID.randomUUID().toString().replace("-", "");
+
+                                                                        final HashMap<String, String> chatidmap = new HashMap<>();
+                                                                        chatidmap.put("chatid", uuid);
+                                                                        chatidmap.put(uid, uid);
+                                                                        chatidmap.put(otheruid, otheruid);
+
+
+                                                                        db.collection("chatids")
+                                                                                .add(chatidmap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                                    @Override
+                                                                                    public void onSuccess(DocumentReference documentReference) {
+                                                                                        Toast.makeText(itemView.getContext(), "You are Friends", Toast.LENGTH_SHORT).show();
+                                                                                    }
+                                                                                });
+
+                                                                        final HashMap<String, String> chatmap = new HashMap<>();
+                                                                        chatmap.put("message", "hi");
+                                                                        chatmap.put("sentTO", otheruid);
+                                                                        chatmap.put("sendBy", mAuth.getCurrentUser().getUid());
+                                                                        Date currentTime = Calendar.getInstance().getTime();
+                                                                        chatmap.put("time", currentTime.toString());
+
+                                                                        db.collection("chatbox")
+                                                                                .document(uuid)
+                                                                                .collection("chats")
+                                                                                .add(chatmap);
                                                                     }
                                                                 });
-
-                                                                final HashMap<String, String> chatmap = new HashMap<>();
-                                                                chatmap.put("message","hi");
-                                                                chatmap.put("sentTO", otheruid);
-                                                                chatmap.put("sendBy", mAuth.getCurrentUser().getUid());
-                                                                Date currentTime = Calendar.getInstance().getTime();
-                                                                chatmap.put("time", currentTime.toString());
-
-                                                                db.collection("chatbox")
-                                                                        .document(uuid)
-                                                                        .collection("chats")
-                                                                        .add(chatmap);
-                                                            }
-                                                        });
 
 
                                                     }
