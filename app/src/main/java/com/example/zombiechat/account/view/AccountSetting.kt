@@ -1,20 +1,19 @@
 package com.example.zombiechat.account.view
 
 import android.app.ProgressDialog
-import android.arch.lifecycle.ViewModelProvider
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.example.zombiechat.R
 import com.example.zombiechat.account.data.repo.AccountRepo
 import com.example.zombiechat.account.viewModel.UserViewModel

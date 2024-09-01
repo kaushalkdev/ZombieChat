@@ -12,15 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".chat.UsersChatActivity"
-            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".chat.UsersChatActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".account.view.UserProfile"
             android:parentActivityName=".friends.AllusersActivity" />
         <activity
             android:name=".friends.AllusersActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,9 +33,9 @@
         <activity
             android:name=".account.view.AccountSetting"
             android:parentActivityName=".MainActivity" />
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
+<!--        <activity-->
+<!--            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"-->
+<!--            android:theme="@style/Base.Theme.AppCompat" />-->
     </application>
 
 </manifest>
