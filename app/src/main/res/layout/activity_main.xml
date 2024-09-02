@@ -7,11 +7,10 @@
     tools:context=".MainActivity">
 
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/main_app_bar"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
 
         <include
@@ -23,7 +22,7 @@
         </include>
 
 
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/main_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,24 +31,24 @@
             app:tabIndicatorHeight="4dp">
 
 
-        </android.support.design.widget.TabLayout>
+        </com.google.android.material.tabs.TabLayout>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/main_view_pager"
         android:layout_width="match_parent"
         android:layout_height="700dp"
         android:layout_below="@id/main_app_bar"
         android:layout_alignParentTop="true"
-        android:id="@+id/main_view_pager"
         android:layout_marginTop="102dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_app_bar">
 
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 
 
 </RelativeLayout>

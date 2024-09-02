@@ -5,7 +5,6 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -36,7 +35,7 @@ class AccountSetting : AppCompatActivity() {
     private var mToolbar: Toolbar? = null
     private var mProgress: ProgressDialog? = null
 
-    private var repo: AccountRepo? = null
+
     private lateinit var userViewModel: UserViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,8 +63,11 @@ class AccountSetting : AppCompatActivity() {
         //proress dialog
         mProgress = ProgressDialog(this)
 
-        repo = AccountRepo()
-//        userViewModel =  ViewModelProvider()
+
+        userViewModel = UserViewModel(AccountRepo())
+
+
+
 
 
         medituserimage?.setOnClickListener(View.OnClickListener {
@@ -90,24 +92,10 @@ class AccountSetting : AppCompatActivity() {
                 if (sexEditText.text.toString() == "") {
                     Toast.makeText(this@AccountSetting, "empty text", Toast.LENGTH_SHORT).show()
                 } else if (sex.matches("male".toRegex()) || sex.matches("female".toRegex())) {
-//                            TODO set gender
-//                            DocumentReference documentRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
-//
-//
-//                            documentRef
-//                                    .update("sex", sexEditText.getText().toString().toLowerCase())
-//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void aVoid) {
-//                                            Log.d(TAG, "DocumentSnapshot successfully updated!");
-//                                        }
-//                                    })
-//                                    .addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Log.w(TAG, "Error updating document", e);
-//                                        }
-//                                    });
+
+
+                    userViewModel.updateGender(sexEditText.text.toString())
+
                 } else {
                     Toast.makeText(this@AccountSetting, "invalid values", Toast.LENGTH_SHORT).show()
                 }
@@ -125,24 +113,7 @@ class AccountSetting : AppCompatActivity() {
                 if (nameEditText.text.toString() == "") {
                     Toast.makeText(this@AccountSetting, "no name", Toast.LENGTH_SHORT).show()
                 } else {
-//                            TODO set name
-//                            DocumentReference documentRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
-//
-//
-//                            documentRef
-//                                    .update("name", nameEditText.getText().toString())
-//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void aVoid) {
-//                                            Log.d(TAG, "DocumentSnapshot successfully updated!");
-//                                        }
-//                                    })
-//                                    .addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Log.w(TAG, "Error updating document", e);
-//                                        }
-//                                    });
+                    userViewModel.updateName(nameEditText.text.toString())
                 }
             }.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             builder.show()
@@ -161,26 +132,7 @@ class AccountSetting : AppCompatActivity() {
                 if (statusEditText.text.toString() == "") {
                     Toast.makeText(this@AccountSetting, "no status", Toast.LENGTH_SHORT).show()
                 } else {
-                    //                            TODO set status
-
-//                            //updating status
-//                            DocumentReference documentRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
-//
-//
-//                            documentRef
-//                                    .update("status", statusEditText.getText().toString())
-//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void aVoid) {
-//                                            Log.d(TAG, "DocumentSnapshot successfully updated!");
-//                                        }
-//                                    })
-//                                    .addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Log.w(TAG, "Error updating document", e);
-//                                        }
-//                                    });
+                    userViewModel.updateStatus(statusEditText.text.toString())
                 }
             }.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             builder.show()
@@ -191,33 +143,13 @@ class AccountSetting : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        //TODO load user on start
+        userViewModel.getUser()
 
-        // get user details from cloud firestore
-//        val docRef: DocumentReference =
-//            db.collection("users").document(mAuth.getCurrentUser().getUid())
-//        docRef.addSnapshotListener(object : EventListener<DocumentSnapshot> {
-//            override fun onEvent(
-//                documentSnapshot: DocumentSnapshot,
-//                e: FirebaseFirestoreException?
-//            ) {
-//                if (e != null) {
-//                    return
-//                }
-//                if (documentSnapshot.exists()) {
-//                    musername!!.text = documentSnapshot["name"].toString()
-//                    muserstatus!!.text = documentSnapshot["status"].toString()
-//                    musersex!!.text = documentSnapshot["sex"].toString()
-//                    Picasso.with(this@AccountSetting)
-//                        .load(documentSnapshot["image"].toString())
-//                        .error(R.drawable.default_user)
-//                        .placeholder(R.drawable.default_user)
-//                        .into(muserimage)
-//                }
-//            }
-//        })
+
+
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

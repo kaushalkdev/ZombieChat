@@ -22,7 +22,7 @@
         android:layout_marginTop="5dp"
         android:src="@drawable/default_user" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/user_chat_recycler_view"
@@ -30,7 +30,7 @@
         android:layout_below="@id/user_chat_app_bar"
         android:layout_above="@id/relative_layout">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 
     <RelativeLayout

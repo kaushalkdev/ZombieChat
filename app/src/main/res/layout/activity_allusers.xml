@@ -4,18 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".friends.AllusersActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".friends.AllusersActivity">
 
     <include
         android:id="@+id/all_users_aap_bar"
         layout="@layout/app_bar_layout" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/all_users_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

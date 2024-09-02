@@ -4,9 +4,11 @@ package com.example.zombiechat.account.viewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.zombiechat.account.data.models.UserModel
+import com.example.zombiechat.account.data.repo.AccountRepo
 
 
-class UserViewModel : ViewModel() {
+class UserViewModel(private val repo: AccountRepo) : ViewModel() {
+
     private val userLiveData: MutableLiveData<UserModel> = MutableLiveData<UserModel>()
 
 
@@ -28,6 +30,10 @@ class UserViewModel : ViewModel() {
 
     fun updateUserId(userId: String) {
         userLiveData.value?.userid = userId
+    }
+
+    fun getUser(){
+        repo.getCurrentUser();
     }
 
 
