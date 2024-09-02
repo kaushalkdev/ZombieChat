@@ -51,7 +51,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
     // FirebaseUI for Cloud Firestore
-//    implementation 'com.firebaseui:firebase-ui-firestore:4.3.2'
+    implementation 'com.firebaseui:firebase-ui-firestore:8.0.2'
 
     //picasso library
     implementation 'com.squareup.picasso:picasso:2.5.2'

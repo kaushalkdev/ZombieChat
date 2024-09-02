@@ -12,12 +12,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -213,7 +217,7 @@ public class UsersChatActivity extends AppCompatActivity {
     }
 
 
-    class UsersChatAdapter extends FirestoreRecyclerAdapter<SingleChatModel, UsersChatActivity.UsersChatViewHolder> {
+    class UsersChatAdapter extends FirestoreRecyclerAdapter<SingleChatModel, UsersChatViewHolder> {
 
 
         private FirebaseAuth mAuth = FirebaseAuth.getInstance();
