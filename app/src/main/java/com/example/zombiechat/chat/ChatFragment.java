@@ -49,65 +49,65 @@ public class ChatFragment extends Fragment {
         return view;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
     @Override
     public void onStart() {
         super.onStart();
-        mAuth = FirebaseAuth.getInstance();
+//        mAuth = FirebaseAuth.getInstance();
 
-        registration = db.collection("chatids")
-                .whereEqualTo(mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().getUid())
-                .addSnapshotListener(requireActivity(), new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (queryDocumentSnapshots != null) {
-                            chatid.clear();
-                            for (final QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                Log.d(TAG, "chatid: " + documentSnapshot.get("chatid"));
-
-                                chatid.add(documentSnapshot.get("chatid").toString());
-                                db.collection("chatbox")
-                                        .document(documentSnapshot.get("chatid").toString())
-                                        .collection("chats")
-                                        .orderBy("time", Query.Direction.DESCENDING)
-                                        .limit(1)
-                                        .addSnapshotListener(requireActivity(), new EventListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                                if (queryDocumentSnapshots != null) {
-                                                    for (QueryDocumentSnapshot documentSnapshot1 : queryDocumentSnapshots) {
-
-                                                        Chat chats = new Chat();
-
-                                                        chatsList.clear();
-                                                        chats.setMessage(documentSnapshot1.get("message").toString());
-                                                        chats.setSentTO(documentSnapshot1.get("sentTO").toString());
-                                                        chats.setSendBy(documentSnapshot1.get("sendBy").toString());
-
-                                                        chatsList.add(chats);
-
-
-                                                    }
-                                                }
-
-                                                adapter = new ChatAdapter(getActivity(), chatid);
-                                                adapter.notifyDataSetChanged();
-                                                mrecyclerview.setAdapter(adapter);
-                                            }
-                                        });
-
-                            }
-                        }
-
-
-                    }
-                });
+//        registration = db.collection("chatids")
+//                .whereEqualTo(mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().getUid())
+//                .addSnapshotListener(requireActivity(), new EventListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+//                        if (queryDocumentSnapshots != null) {
+//                            chatid.clear();
+//                            for (final QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+//                                Log.d(TAG, "chatid: " + documentSnapshot.get("chatid"));
+//
+//                                chatid.add(documentSnapshot.get("chatid").toString());
+//                                db.collection("chatbox")
+//                                        .document(documentSnapshot.get("chatid").toString())
+//                                        .collection("chats")
+//                                        .orderBy("time", Query.Direction.DESCENDING)
+//                                        .limit(1)
+//                                        .addSnapshotListener(requireActivity(), new EventListener<QuerySnapshot>() {
+//                                            @Override
+//                                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+//                                                if (queryDocumentSnapshots != null) {
+//                                                    for (QueryDocumentSnapshot documentSnapshot1 : queryDocumentSnapshots) {
+//
+//                                                        Chat chats = new Chat();
+//
+//                                                        chatsList.clear();
+//                                                        chats.setMessage(documentSnapshot1.get("message").toString());
+//                                                        chats.setSentTO(documentSnapshot1.get("sentTO").toString());
+//                                                        chats.setSendBy(documentSnapshot1.get("sendBy").toString());
+//
+//                                                        chatsList.add(chats);
+//
+//
+//                                                    }
+//                                                }
+//
+//                                                adapter = new ChatAdapter(getActivity(), chatid);
+//                                                adapter.notifyDataSetChanged();
+//                                                mrecyclerview.setAdapter(adapter);
+//                                            }
+//                                        });
+//
+//                            }
+//                        }
+//
+//
+//                    }
+//                });
 
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        registration.remove();
+//        registration.remove();
     }
 }

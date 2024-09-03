@@ -152,26 +152,10 @@ class AccountSetting : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            val imageUri = data!!.data
-            // start cropping activity for pre-acquired image saved on the device
-
-//            CropImage.activity(imageUri)
-//                .setAspectRatio(1, 1)
-//                .setMinCropWindowSize(500, 500)
-//                .start(this)
+            val resultUri = data!!.data
+            uploadImage(resultUri!!)
         }
-
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-//            val result = CropImage.getActivityResult(data)
-//            if (resultCode == RESULT_OK) {
-//                val resultUri = result.uri
-//                uploadImage(resultUri)
-//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                val error = result.error
-//            }
-//        }
     }
 
     private fun uploadImage(resultUri: Uri) {
@@ -181,7 +165,8 @@ class AccountSetting : AppCompatActivity() {
 
 
         //        TODO upload image and update database
-//        mProgress.show();
+        mProgress!!.show();
+
 //        final String uid = mAuth.getCurrentUser().getUid();
 //        final StorageReference filePath = mStorageRef.child("profile_pictures").child(uid + ".jpg");
 //

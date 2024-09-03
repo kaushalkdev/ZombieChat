@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">ZombieChat</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_web_client_id">822340181981-3v2r57prcip61tc4q7rcg67rr1hjjnei.apps.googleusercontent.com</string>
 </resources>
