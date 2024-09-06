@@ -17,7 +17,10 @@ class UserViewModel(private val repo: AccountRepo) : ViewModel() {
 
     fun updateName(name: String) {
         val user = userLiveData.value?.apply { this.name = name }
-        repo.updateUser(user!!)
+        runBlocking {
+            repo.updateUser(user!!)
+        }
+
         userLiveData.postValue(user)
     }
 
@@ -38,13 +41,17 @@ class UserViewModel(private val repo: AccountRepo) : ViewModel() {
 
     fun updateGender(gender: String) {
         val user = userLiveData.value?.apply { this.gender = gender }
-        repo.updateUser(user!!)
+        runBlocking {
+            repo.updateUser(user!!)
+        }
         userLiveData.postValue(user)
     }
 
     fun updateStatus(status: String) {
         val user = userLiveData.value?.apply { this.status = status }
-        repo.updateUser(user!!)
+        runBlocking {
+            repo.updateUser(user!!)
+        }
         userLiveData.postValue(user)
     }
 

@@ -51,10 +51,10 @@ class AccountRepo {
     }
 
 
-    fun updateUser(model: UserModel): Boolean {
+    suspend fun updateUser(model: UserModel): Boolean {
 
         if (currentUser != null) {
-            currentUser!!.set(model)
+            currentUser!!.set(model).await();
             return true
         } else {
             return false
