@@ -25,7 +25,7 @@ public class AllUsersRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
     private static final String TAG = "AllUsersRecyclerAdapter";
     List<UserModel> userModels;
 
-    public AllUsersRecyclerAdapter(List<UserModel> userModels, String uid) {
+    public AllUsersRecyclerAdapter(List<UserModel> userModels) {
         this.userModels = userModels;
     }
 

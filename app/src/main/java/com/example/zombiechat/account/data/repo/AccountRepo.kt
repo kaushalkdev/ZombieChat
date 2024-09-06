@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
@@ -31,19 +32,11 @@ class AccountRepo {
 
         if (currentAuth != null) {
             currentUser = userCollection.document(currentAuth!!)
-            val model = UserModel
+
 
             val snapShot = currentUser!!.get().await()
 
-
-
-            model.image = snapShot.getString("image");
-            model.name = snapShot.getString("name");
-            model.status = snapShot.getString("status");
-            model.userid = snapShot.getString("userid");
-            model.gender = snapShot.getString("gender");
-
-            return model
+            return snapShot.toObject<UserModel>()
 
         }
         return null

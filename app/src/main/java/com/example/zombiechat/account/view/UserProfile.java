@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.zombiechat.R;
+import com.example.zombiechat.account.data.models.UserModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -67,63 +68,50 @@ public class UserProfile extends AppCompatActivity {
 
 
         // check if the user is already friend or request is already sent
-        db.collection("requests")
-                .whereEqualTo("sendBy", mAuth.getCurrentUser().getUid())
-                .whereEqualTo("sentTo", uid)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+        db.collection("requests").whereEqualTo("sendBy", mAuth.getCurrentUser().getUid()).whereEqualTo("sentTo", uid).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            msendRequestBtn.setText("Request Sent");
-                            msendRequestBtn.setClickable(false);
-                        }
-                    }
-                });
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    msendRequestBtn.setText("Request Sent");
+                    msendRequestBtn.setClickable(false);
+                }
+            }
+        });
 
         final Map<String, String> userMap = new HashMap<>();
 
         // get user details from cloud firestore
-        db.collection("users")
-                .document(uid)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+        db.collection("users").document(uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                var model = documentSnapshot.toObject(UserModel.class);
 
 
-                        musername.setText(documentSnapshot.get("name").toString());
-                        muserstatus.setText(documentSnapshot.get("status").toString());
-                        musersex.setText(documentSnapshot.get("sex").toString());
-                        Picasso.with(UserProfile.this)
-                                .load(documentSnapshot.get("image").toString())
-                                .error(R.drawable.default_user)
-                                .placeholder(R.drawable.default_user)
-                                .into(muserimage);
+                assert model != null;
+                musername.setText(model.getName());
+                muserstatus.setText(model.getStatus());
+                musersex.setText(model.getGender());
+                Picasso.with(UserProfile.this).load(model.getImage()).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(muserimage);
 
 
-                    }
-                });
+            }
+        });
 
         // find all the friends of the user
-        db.collection("friends")
-                .whereEqualTo("userid", mAuth.getCurrentUser().getUid())
-                .whereEqualTo("friendId", uid)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+        db.collection("friends").whereEqualTo("userid", mAuth.getCurrentUser().getUid()).whereEqualTo("friendId", uid).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            if (documentSnapshot.exists()) {
-                                msendRequestBtn.setText("Friend");
-                                msendRequestBtn.setClickable(false);
-                            }
-                        }
-
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    if (documentSnapshot.exists()) {
+                        msendRequestBtn.setText("Friend");
+                        msendRequestBtn.setClickable(false);
                     }
-                });
+                }
+
+            }
+        });
 
         msendRequestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,15 +123,13 @@ public class UserProfile extends AppCompatActivity {
                 userMap.put("requeststatus", "sendRequest");
 
                 // send friend request
-                db.collection("requests")
-                        .add(userMap)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                msendRequestBtn.setText("Request Sent");
-                                msendRequestBtn.setClickable(false);
-                            }
-                        });
+                db.collection("requests").add(userMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        msendRequestBtn.setText("Request Sent");
+                        msendRequestBtn.setClickable(false);
+                    }
+                });
 
             }
         });
