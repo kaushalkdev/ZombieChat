@@ -15,10 +15,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.zombiechat.account.view.AccountSetting;
 import com.example.zombiechat.account.view.SigninActivity;
-import com.example.zombiechat.friends.AllusersActivity;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.example.zombiechat.friends.view.AllusersActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;

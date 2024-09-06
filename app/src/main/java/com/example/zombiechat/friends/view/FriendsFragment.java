@@ -1,4 +1,4 @@
-package com.example.zombiechat.friends;
+package com.example.zombiechat.friends.view;
 
 import android.os.Build;
 import android.os.Bundle;
