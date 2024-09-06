@@ -1,6 +1,7 @@
 package com.example.zombiechat.account.viewModel
 
 
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.zombiechat.account.data.models.UserModel
@@ -15,24 +16,38 @@ class UserViewModel(private val repo: AccountRepo) : ViewModel() {
 
 
     fun updateName(name: String) {
-        userLiveData.value?.name = name
+        val user = userLiveData.value?.apply { this.name = name }
+        repo.updateUser(user!!)
+        userLiveData.postValue(user)
     }
 
-    fun updateImage(image: String) {
-        userLiveData.value?.image = image
+    suspend fun updateImage(image: String) {
+
+        runBlocking {
+            launch {
+
+
+                val uploadedUrl = repo.uploadUserImage(Uri.parse(image))
+                val user = userLiveData.value?.apply { this.image = uploadedUrl }
+                repo.updateUser(user!!)
+                userLiveData.postValue(user)
+            }
+        }
+
     }
 
     fun updateGender(gender: String) {
-        userLiveData.value?.gender = gender
+        val user = userLiveData.value?.apply { this.gender = gender }
+        repo.updateUser(user!!)
+        userLiveData.postValue(user)
     }
 
     fun updateStatus(status: String) {
-        userLiveData.value?.status = status
+        val user = userLiveData.value?.apply { this.status = status }
+        repo.updateUser(user!!)
+        userLiveData.postValue(user)
     }
 
-    fun updateUserId(userId: String) {
-        userLiveData.value?.userid = userId
-    }
 
     suspend fun getUser() {
         runBlocking {

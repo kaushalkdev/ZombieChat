@@ -156,11 +156,6 @@ class AccountSetting : AppCompatActivity() {
     }
 
 
-    override fun onStart() {
-        super.onStart()
-
-    }
-
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -175,53 +170,21 @@ class AccountSetting : AppCompatActivity() {
         mProgress!!.setMessage("Please wait while we upload the image.")
         mProgress!!.setCanceledOnTouchOutside(false)
 
+        runBlocking {
+            try {
+                mProgress!!.show();
+                userViewModel.updateImage(resultUri.toString())
+                mProgress!!.dismiss();
+            } catch (e: Exception) {
+                mProgress!!.dismiss();
+                Toast.makeText(this@AccountSetting, "Error uploading image", Toast.LENGTH_SHORT)
+                    .show()
+            }
 
-        //        TODO upload image and update database
-        mProgress!!.show();
+        }
 
-//        final String uid = mAuth.getCurrentUser().getUid();
-//        final StorageReference filePath = mStorageRef.child("profile_pictures").child(uid + ".jpg");
-//
-//
-//        // add file on Firebase and got Download Link
-//        filePath.putFile(resultUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-//            @Override
-//            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-//                if (!task.isSuccessful()) {
-//                    throw task.getException();
-//                }
-//                return filePath.getDownloadUrl();
-//            }
-//        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Uri> task) {
-//                if (task.isSuccessful()) {
-//                    mProgress.dismiss();
-//                    Uri downUri = task.getResult();
-//                    updateDatabase(downUri);
-//                }
-//            }
-//        });
     }
 
-    private fun updateDatabase(downUri: Uri) {
-//        val newmap: MutableMap<String, Any> = HashMap()
-//        newmap["image"] = downUri.toString()
-//        val documentRef: DocumentReference =
-//            db.collection("users").document(mAuth.getCurrentUser().getUid())
-//
-//
-//        documentRef
-//            .update(newmap)
-//            .addOnSuccessListener {
-//                Picasso.with(this@AccountSetting)
-//                    .load(downUri)
-//                    .error(R.drawable.default_user)
-//                    .placeholder(R.drawable.default_user)
-//                    .into(muserimage)
-//            }
-//            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
-    }
 
     companion object {
         private const val REQUEST_CODE = 12

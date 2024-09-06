@@ -35,11 +35,13 @@ class AccountRepo {
 
             val snapShot = currentUser!!.get().await()
 
+
+
             model.image = snapShot.getString("image");
             model.name = snapShot.getString("name");
             model.status = snapShot.getString("status");
             model.userid = snapShot.getString("userid");
-            model.gender = snapShot.getString("sex");
+            model.gender = snapShot.getString("gender");
 
             return model
 
@@ -62,16 +64,17 @@ class AccountRepo {
     }
 
 
-    fun uploadUserImage(imagePath: Uri): String {
-//        TODO udpate the logic to fix
-        storageRef.child("profileImages/${currentAuth}.jpg").putFile(imagePath)
-            .addOnSuccessListener {
-                return@addOnSuccessListener
-            }.addOnFailureListener {
-                return@addOnFailureListener
-            }
+    suspend fun uploadUserImage(imagePath: Uri): String? {
 
-        return ""
+        try {
+            val future =
+                storageRef.child("profileImages/${currentAuth}.jpg").putFile(imagePath).await()
+            return future.storage.downloadUrl.await().toString()
+        } catch (e: Exception) {
+            return null;
+        }
+
+
     }
 }
 
