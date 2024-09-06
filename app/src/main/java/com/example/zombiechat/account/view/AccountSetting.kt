@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar
 import com.example.zombiechat.R
 import com.example.zombiechat.account.data.repo.AccountRepo
 import com.example.zombiechat.account.viewModel.UserViewModel
+import com.squareup.picasso.Picasso
 
 
 import de.hdodenhof.circleimageview.CircleImageView
@@ -70,7 +71,9 @@ class AccountSetting : AppCompatActivity() {
             musername?.text = it.name
             muserstatus?.text = it.status
             musersex?.text = it.gender
-            muserimage?.setImageURI(Uri.parse(it.image))
+            Picasso.Builder(this).build().load(it.image).error(R.drawable.default_user)
+                .placeholder(R.drawable.default_user).into(muserimage)
+
 
         };
 
