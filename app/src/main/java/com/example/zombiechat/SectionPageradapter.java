@@ -1,7 +1,6 @@
 package com.example.zombiechat;
 
 
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -20,10 +19,10 @@ public class SectionPageradapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         return switch (position) {
-            case 0 -> new ChatFragment();
+
             case 1 -> new FriendsFragment();
             case 2 -> new RequestFragment();
-            default -> null;
+            default -> new ChatFragment();
         };
     }
 

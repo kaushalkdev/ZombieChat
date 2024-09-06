@@ -11,7 +11,7 @@ android {
     }
     defaultConfig {
         applicationId "com.example.zombiechat"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -56,8 +56,7 @@ dependencies {
 
     //picasso library
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    //image cropper use this version to avoid merger manifest error.
-//    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
+
     //for firebase crashlytics
     implementation 'com.google.firebase:firebase-crashlytics'
     // Check for v11.4.2 or higher

@@ -19,6 +19,7 @@ import com.example.zombiechat.account.viewModel.UserViewModel
 
 
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 class AccountSetting : AppCompatActivity() {
@@ -65,6 +66,18 @@ class AccountSetting : AppCompatActivity() {
 
 
         userViewModel = UserViewModel(AccountRepo())
+        userViewModel.userLiveData.observe(this) {
+            musername?.text = it.name
+            muserstatus?.text = it.status
+            musersex?.text = it.gender
+            muserimage?.setImageURI(Uri.parse(it.image))
+
+        };
+
+        runBlocking {
+            userViewModel.getUser()
+        }
+
 
 
 
@@ -142,10 +155,6 @@ class AccountSetting : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
-        userViewModel.getUser()
-
-
 
     }
 

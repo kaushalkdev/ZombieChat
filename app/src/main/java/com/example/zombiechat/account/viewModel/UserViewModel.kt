@@ -5,11 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.zombiechat.account.data.models.UserModel
 import com.example.zombiechat.account.data.repo.AccountRepo
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class UserViewModel(private val repo: AccountRepo) : ViewModel() {
 
-    private val userLiveData: MutableLiveData<UserModel> = MutableLiveData<UserModel>()
+    val userLiveData: MutableLiveData<UserModel> = MutableLiveData<UserModel>()
 
 
     fun updateName(name: String) {
@@ -32,9 +34,21 @@ class UserViewModel(private val repo: AccountRepo) : ViewModel() {
         userLiveData.value?.userid = userId
     }
 
-    fun getUser(){
-        repo.getCurrentUser();
+    suspend fun getUser() {
+        runBlocking {
+            launch {
+
+                try {
+                    val user = repo.getCurrentUser() ?: throw Exception("Error getting user")
+
+                    userLiveData.value = user
+                } catch (e: Exception) {
+                    throw Exception("Error getting user ${e.message}")
+                }
+
+            }
+        }
+
+
     }
-
-
 }
