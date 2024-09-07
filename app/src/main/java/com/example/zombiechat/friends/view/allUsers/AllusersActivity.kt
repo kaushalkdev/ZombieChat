@@ -1,20 +1,13 @@
-package com.example.zombiechat.friends.view
+package com.example.zombiechat.friends.view.allUsers
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zombiechat.R
-import com.example.zombiechat.account.data.models.UserModel
-import com.example.zombiechat.friends.data.repo.FriendsRepo
-import com.example.zombiechat.friends.viewmodels.AllUsersViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
+import com.example.zombiechat.friends.data.repo.AllUsersRepo
+import com.example.zombiechat.friends.viewModels.AllUsersViewModel
 import kotlinx.coroutines.runBlocking
 
 
@@ -39,11 +32,14 @@ class AllusersActivity : AppCompatActivity() {
         mrecyclerview!!.setHasFixedSize(true)
         mrecyclerview!!.setLayoutManager(LinearLayoutManager(this))
 
-        val repo = FriendsRepo()
+        val repo = AllUsersRepo()
         allUsersViewModel = AllUsersViewModel(repo)
 
         allUsersViewModel!!.getLiveUsers().observe(this) {
-            madapter = AllUsersRecyclerAdapter(it)
+            madapter =
+                AllUsersRecyclerAdapter(
+                    it
+                )
             mrecyclerview!!.setAdapter(madapter)
         }
 

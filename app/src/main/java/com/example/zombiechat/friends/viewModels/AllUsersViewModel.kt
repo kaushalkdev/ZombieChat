@@ -1,12 +1,12 @@
-package com.example.zombiechat.friends.viewmodels
+package com.example.zombiechat.friends.viewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.zombiechat.account.data.models.UserModel
-import com.example.zombiechat.friends.data.repo.FriendsRepo
+import com.example.zombiechat.friends.data.repo.AllUsersRepo
 import kotlinx.coroutines.runBlocking
 
-class AllUsersViewModel(private val repo: FriendsRepo) : ViewModel() {
+class AllUsersViewModel(private val repo: AllUsersRepo) : ViewModel() {
 
     private val usersLiveData: MutableLiveData<List<UserModel>> = MutableLiveData()
 

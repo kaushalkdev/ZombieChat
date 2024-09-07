@@ -1,4 +1,4 @@
-package com.example.zombiechat.friends.view;
+package com.example.zombiechat.friends.view.allUsers;
 
 import android.content.Intent;
 import android.util.Log;
