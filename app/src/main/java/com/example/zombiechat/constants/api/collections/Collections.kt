@@ -7,5 +7,6 @@ class Collections {
         const val messageCollection = "messages"
         const val chatCollection = "chats"
         const val friendsCollection = "friends"
+        const val requestsCollection = "requests"
     }
 }
