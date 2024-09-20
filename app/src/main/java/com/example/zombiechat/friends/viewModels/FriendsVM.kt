@@ -24,6 +24,7 @@ class FriendsVM(private val repo: FriendsRepo) : ViewModel() {
         return liveRequests
     }
 
+
     suspend fun fetchAllFriends() {
         runBlocking {
             val friends = repo.getAllFriends()
@@ -33,11 +34,26 @@ class FriendsVM(private val repo: FriendsRepo) : ViewModel() {
 
     @OptIn(DelicateCoroutinesApi::class)
     fun fetchAllRequests() {
-//        TODO read more about this global scope.
+
+        // TODO read more about this global scope.
 
         GlobalScope.launch {
             val requests = repo.getAllRequests()
             liveRequests.postValue(requests)
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun acceptRequest(userId: String) {
+        GlobalScope.launch {
+            repo.acceptRequest(userId)
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun rejectRequest(userId: String) {
+        GlobalScope.launch {
+            repo.rejectRequest(userId)
         }
     }
 
