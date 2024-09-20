@@ -16,6 +16,9 @@ class FriendsRepo {
     private val friendsColl: CollectionReference =
         FirebaseFirestore.getInstance().collection(Collections.friendsCollection)
 
+    private val requestsColl: CollectionReference =
+        FirebaseFirestore.getInstance().collection(Collections.requestsCollection)
+
     private var currentUserId: String? = FirebaseAuth.getInstance().uid
 
 
@@ -32,7 +35,7 @@ class FriendsRepo {
 
             for (friend in friendsSnapshot) {
                 for (user in allUsersSnapshot) {
-                    if (friend.toObject(UserModel::class.java).userid == user.toObject(UserModel::class.java).userid) {
+                    if (friend.getString("userId") == user.toObject(UserModel::class.java).userid) {
                         friends.add(user.toObject(UserModel::class.java))
                     }
                 }
@@ -42,6 +45,29 @@ class FriendsRepo {
         }
 
         return friends
+    }
+
+    suspend fun getAllRequests(): List<UserModel> {
+        val requests: MutableList<UserModel> = mutableListOf()
+
+        try {
+            val requestsSnapshot = requestsColl.get().await()
+
+            val allUsersSnapshot = userCollection.get().await()
+
+            for (request in requestsSnapshot) {
+                for (user in allUsersSnapshot) {
+//   TODO               using sendTo id to find whom we have requested for now ; To be changes later.
+                    if (request.getString("sentTo") == user.toObject(UserModel::class.java).userid) {
+                        requests.add(user.toObject(UserModel::class.java))
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return requests
     }
 
 

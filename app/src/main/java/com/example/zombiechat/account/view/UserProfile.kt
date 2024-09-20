@@ -90,55 +90,5 @@ class UserProfile : AppCompatActivity() {
         }
 
 
-//        profileVM = ProfileVM()
-
-
-//        //cloud firestore
-//        db = FirebaseFirestore.getInstance();
-//
-//        //firebase auth
-//        mAuth = FirebaseAuth.getInstance();
-        val userMap: MutableMap<String, String?> = HashMap()
-
-        // get user details from cloud firestore
-//        db.collection("users").document(uid).get()
-//            .addOnSuccessListener(OnSuccessListener<DocumentSnapshot> { documentSnapshot ->
-//                val model = checkNotNull(
-//                    documentSnapshot.toObject(
-//                        UserModel::class.java
-//                    )
-//                )
-//                musername.setText(model.name)
-//                muserstatus.setText(model.status)
-//                musersex.setText(model.gender)
-//                Picasso.with(this@UserProfile).load(model.image).error(R.drawable.default_user)
-//                    .placeholder(R.drawable.default_user).into(muserimage)
-//            })
-
-        // find all the friends of the user
-//        db.collection("friends").whereEqualTo("userid", mAuth.getCurrentUser().getUid())
-//            .whereEqualTo("friendId", uid).get().addOnSuccessListener(
-//            OnSuccessListener<QuerySnapshot> { queryDocumentSnapshots ->
-//                for (documentSnapshot in queryDocumentSnapshots) {
-//                    if (documentSnapshot.exists()) {
-//                        msendRequestBtn.setText("Friend")
-//                        msendRequestBtn.setClickable(false)
-//                    }
-//                }
-//            })
-
-//        msendRequestBtn.setOnClickListener(View.OnClickListener {
-//            userMap["sendBy"] = mAuth.getCurrentUser().getUid()
-//            userMap["sentTo"] = uid
-//            userMap["requeststatus"] = "sendRequest"
-//
-//            // send friend request
-//            db.collection("requests").add(userMap)
-//                .addOnSuccessListener(OnSuccessListener<DocumentReference?> {
-//                    msendRequestBtn.setText("Request Sent")
-//                    msendRequestBtn.setClickable(false)
-//                })
-//        })
-
     }
 }
