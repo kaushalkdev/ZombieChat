@@ -58,8 +58,8 @@ class UserProfile : AppCompatActivity() {
                 msendRequestBtn?.text = "Send Request"
                 msendRequestBtn?.isClickable = true
             } else if (it.status == "requestSent") {
-                msendRequestBtn?.text = "Pennding"
-                msendRequestBtn?.isClickable = true
+                msendRequestBtn?.text = "Pending"
+                msendRequestBtn?.isClickable = false
             } else {
                 msendRequestBtn?.text = "Friends"
                 msendRequestBtn?.isClickable = false
@@ -69,7 +69,7 @@ class UserProfile : AppCompatActivity() {
 
         profileVM!!.isRequestSent.observe(this) {
             if (it) {
-                msendRequestBtn?.text = "Pennding"
+                msendRequestBtn?.text = "Pending"
                 msendRequestBtn?.isClickable = false
             }
         }

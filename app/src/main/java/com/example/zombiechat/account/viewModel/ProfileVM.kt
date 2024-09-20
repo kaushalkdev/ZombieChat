@@ -32,25 +32,26 @@ class ProfileVM(private val repo: ProfileRepo) : ViewModel() {
 
     suspend fun checkIfFriend(userId: String) {
         runBlocking {
-            val requestModel = repo.userAFriend(userId)
+            val requestModel = repo.checkRequest(userId)
+            val isFriend = repo.isAFriend(userId)
 
-            friendStatus.postValue(requestModel)
+            if (requestModel != null) {
+                friendStatus.postValue(requestModel)
+            } else if (isFriend) {
+                friendStatus.postValue(RequestModel(status = "Friends"))
+            }
+
+
         }
     }
 
 
     suspend fun sendFriendRequest(userId: String) {
         runBlocking {
-            var result = repo.sendFriendRequest(userId)
+            val result = repo.sendFriendRequest(userId)
             isRequestSent.postValue(result)
         }
     }
 
-//        fun updateName(name: String) {
-//            repo.updateName(name)
-//        }
-//
-//        fun updateImage(image: String) {
-//            repo.updateImage(image)
-//        }
+
 }

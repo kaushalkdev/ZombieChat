@@ -11,8 +11,9 @@ import kotlinx.coroutines.tasks.await
 
 interface ProfileRepo {
     suspend fun getUser(userId: String): UserModel
-    suspend fun userAFriend(otherUserId: String): RequestModel?
-    suspend fun activeFriendRequest(otherUserId: String): Boolean
+    suspend fun checkRequest(otherUserId: String): RequestModel?
+    suspend fun isAFriend(otherUserId: String): Boolean
+
     suspend fun sendFriendRequest(otherUserId: String): Boolean
 }
 
@@ -22,33 +23,39 @@ class ProfileRepoImpl : ProfileRepo {
     private var userCollection: CollectionReference =
         FirebaseFirestore.getInstance().collection(Collections.userCollection)
 
+    private val friendsColl: CollectionReference =
+        FirebaseFirestore.getInstance().collection(Collections.friendsCollection)
+
     private var currentUserId: String? = FirebaseAuth.getInstance().uid
     override suspend fun getUser(userId: String): UserModel {
         val userSnapshot = userCollection.document(userId).get().await()
         return userSnapshot.toObject<UserModel>()!!
     }
 
-    override suspend fun userAFriend(otherUserId: String): RequestModel? {
+    override suspend fun checkRequest(otherUserId: String): RequestModel? {
         val friendsSnapshot =
             requestsColl.whereEqualTo("sendBy", currentUserId).whereEqualTo("sentTo", otherUserId)
                 .get().await()
         if (friendsSnapshot.documents.isEmpty()) return null
 
         val document = friendsSnapshot.documents.first().toObject<RequestModel>()
-         return  document!!
+        return document!!
 
 
     }
 
-    override suspend fun activeFriendRequest(otherUserId: String): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isAFriend(otherUserId: String): Boolean {
+        val friends =
+            friendsColl.document(currentUserId!!).collection(Collections.friendsCollection)
+                .whereEqualTo("friendId", otherUserId).get().await().documents
+        return friends.isNotEmpty()
+
     }
+
 
     override suspend fun sendFriendRequest(otherUserId: String): Boolean {
         val request = hashMapOf(
-            "sendBy" to currentUserId,
-            "sentTo" to otherUserId,
-            "status" to "requestSent"
+            "sendBy" to currentUserId, "sentTo" to otherUserId, "status" to "requestSent"
         )
 
 
