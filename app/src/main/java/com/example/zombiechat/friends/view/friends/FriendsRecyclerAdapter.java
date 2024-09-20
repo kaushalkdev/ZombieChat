@@ -1,4 +1,4 @@
-package com.example.zombiechat.friends;
+package com.example.zombiechat.friends.view.friends;
 
 import android.content.Intent;
 import android.os.Build;
@@ -36,18 +36,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHolder> {
 
     public static final String TAG = "FriendsRecyclerAdapter";
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
     private List<UserModel> userModels;
-    List<String> userId;
 
-    public FriendsRecyclerAdapter(List<UserModel> userModels, List<String> userId) {
-        this.userModels = userModels;
-        this.userId = userId;
-    }
 
-    public FriendsRecyclerAdapter(List<String> friendid) {
-        this.userId = friendid;
+    public FriendsRecyclerAdapter(List<UserModel> friends) {
+        this.userModels = friends;
+
     }
 
     @NonNull
@@ -59,36 +54,16 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final friendsViewHolder mViewHolder, int i) {
-
-
-        db.collection("users").whereEqualTo("userid", userId.get(i)).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    return;
-                }
-
-
-                for (QueryDocumentSnapshot documentSnapshot : Objects.requireNonNull(queryDocumentSnapshots)) {
-                    UserModel userModel = documentSnapshot.toObject(UserModel.class);
-                    Log.d(TAG, "single user: " + userModel.getName());
-
-                    mViewHolder.username.setText(userModel.getName());
-                    mViewHolder.userstatus.setText(userModel.getStatus());
-                    mViewHolder.setImage(userModel.getImage());
-                    mViewHolder.setOnclick(userModel);
-
-                }
-
-            }
-        });
+        mViewHolder.username.setText(userModels.get(i).getName());
+        mViewHolder.userstatus.setText(userModels.get(i).getStatus());
+        mViewHolder.setImage(userModels.get(i).getImage());
+        mViewHolder.setOnclick(userModels.get(i));
 
     }
 
     @Override
     public int getItemCount() {
-        return userId.size();
+        return userModels.size();
     }
 }
 

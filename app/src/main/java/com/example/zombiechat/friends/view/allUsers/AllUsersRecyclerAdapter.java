@@ -1,4 +1,4 @@
-package com.example.zombiechat.friends;
+package com.example.zombiechat.friends.view.allUsers;
 
 import android.content.Intent;
 import android.util.Log;
@@ -19,13 +19,13 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AllUsersRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class AllUsersRecyclerAdapter extends RecyclerView.Adapter<AllUsersRecyclerAdapter.ViewHolder> {
 
 
     private static final String TAG = "AllUsersRecyclerAdapter";
     List<UserModel> userModels;
 
-    public AllUsersRecyclerAdapter(List<UserModel> userModels, String uid) {
+    public AllUsersRecyclerAdapter(List<UserModel> userModels) {
         this.userModels = userModels;
     }
 
@@ -54,40 +54,43 @@ public class AllUsersRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         Log.d(TAG, "getItemCount: " + userModels.size());
         return userModels.size();
     }
+
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
+
+        TextView username, userstatus;
+        CircleImageView userimage;
+
+        public ViewHolder(@NonNull View itemView) {
+
+
+            super(itemView);
+
+            username = itemView.findViewById(R.id.user_name);
+            userstatus = itemView.findViewById(R.id.user_status);
+            userimage = itemView.findViewById(R.id.user_image);
+
+
+        }
+
+        public void setImage(String image) {
+
+            Picasso.with(itemView.getContext()).load(image).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(userimage);
+        }
+
+        public void setOnclick(final String userid, final String name) {
+
+            itemView.setOnClickListener(c -> {
+                Intent userProfileIntent = new Intent(itemView.getContext(), UserProfile.class);
+                userProfileIntent.putExtra("uid", userid);
+                userProfileIntent.putExtra("name", name);
+                itemView.getContext().startActivity(userProfileIntent);
+            });
+
+        }
+    }
+
 }
 
 
-class ViewHolder extends RecyclerView.ViewHolder {
-
-
-    TextView username, userstatus;
-    CircleImageView userimage;
-
-    public ViewHolder(@NonNull View itemView) {
-
-
-        super(itemView);
-
-        username = itemView.findViewById(R.id.user_name);
-        userstatus = itemView.findViewById(R.id.user_status);
-        userimage = itemView.findViewById(R.id.user_image);
-
-
-    }
-
-    public void setImage(String image) {
-
-        Picasso.with(itemView.getContext()).load(image).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(userimage);
-    }
-
-    public void setOnclick(final String userid, final String name) {
-
-        itemView.setOnClickListener(c -> {
-            Intent userProfileIntent = new Intent(itemView.getContext(), UserProfile.class);
-            userProfileIntent.putExtra("uid", userid);
-            userProfileIntent.putExtra("name", name);
-            itemView.getContext().startActivity(userProfileIntent);
-        });
-
-    }
-}

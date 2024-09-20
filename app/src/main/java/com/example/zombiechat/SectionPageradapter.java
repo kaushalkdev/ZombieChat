@@ -7,8 +7,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.zombiechat.chat.ChatFragment;
-import com.example.zombiechat.friends.FriendsFragment;
-import com.example.zombiechat.friends.RequestFragment;
+import com.example.zombiechat.friends.view.friends.FriendsFragment;
+import com.example.zombiechat.friends.view.request.RequestFragment;
 
 public class SectionPageradapter extends FragmentPagerAdapter {
     public SectionPageradapter(FragmentManager fm) {

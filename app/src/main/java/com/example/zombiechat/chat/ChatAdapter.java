@@ -73,13 +73,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
 
 
                                     //for item click to open chat
-                                    UserModel userModel = UserModel.INSTANCE;
-                                    userModel.setImage(documentSnapshot.get("image").toString());
-                                    userModel.setName(documentSnapshot.get("name").toString());
-                                    userModel.setUserid(documentSnapshot.get("userid").toString());
-                                    userModel.setGender(documentSnapshot.get("sex").toString());
 
-                                    holder.setOnclick(userModel);
+//                                    userModel.setImage(documentSnapshot.get("image").toString());
+//                                    userModel.setName(documentSnapshot.get("name").toString());
+//                                    userModel.setUserid(documentSnapshot.get("userid").toString());
+//                                    userModel.setGender(documentSnapshot.get("sex").toString());
+
+//                                    holder.setOnclick(userModel);
                                 }
                             });
                         } else {
@@ -91,14 +91,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
                                     holder.setImgae(documentSnapshot.get("image").toString());
 
 
-                                    //for item click to open chat
-                                    UserModel userModel = UserModel.INSTANCE;
-                                    userModel.setImage(documentSnapshot.get("image").toString());
-                                    userModel.setName(documentSnapshot.get("name").toString());
-                                    userModel.setUserid(documentSnapshot.get("userid").toString());
-                                    userModel.setGender(documentSnapshot.get("sex").toString());
-
-                                    holder.setOnclick(userModel);
+//                                    //for item click to open chat
+//                                    UserModel userModel = UserModel.INSTANCE;
+//                                    userModel.setImage(documentSnapshot.get("image").toString());
+//                                    userModel.setName(documentSnapshot.get("name").toString());
+//                                    userModel.setUserid(documentSnapshot.get("userid").toString());
+//                                    userModel.setGender(documentSnapshot.get("sex").toString());
+//
+//                                    holder.setOnclick(userModel);
                                 }
                             });
 
