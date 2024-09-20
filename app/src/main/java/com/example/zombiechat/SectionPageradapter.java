@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.zombiechat.chat.ChatFragment;
+import com.example.zombiechat.chat.views.screens.ChatFragment;
 import com.example.zombiechat.friends.view.friends.FriendsFragment;
 import com.example.zombiechat.friends.view.request.RequestFragment;
 

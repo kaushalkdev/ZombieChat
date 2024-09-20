@@ -1,4 +1,4 @@
-package com.example.zombiechat.chat;
+package com.example.zombiechat.chat.views.screens;
 
 import android.speech.tts.TextToSpeech;
 import android.os.Bundle;
@@ -13,23 +13,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
+import com.example.zombiechat.chat.data.models.SingleChatModel;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -55,7 +50,7 @@ public class UsersChatActivity extends AppCompatActivity {
     private RecyclerView mrecyclerview;
     private UsersChatAdapter adapter;
     private LinearLayoutManager mLayoutManager;
-    ListenerRegistration registration;
+//    ListenerRegistration registration;
 
 
     @Override
@@ -173,15 +168,15 @@ public class UsersChatActivity extends AppCompatActivity {
 
         //for speaking message only female voice currently
 
-        registration = db.collection("chatbox").document(chatid).collection("chats").orderBy("time", Query.Direction.DESCENDING).whereEqualTo("sendBy", uid).limit(1).addSnapshotListener(this, new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-
-                    speak(documentSnapshot.get("message").toString());
-                }
-            }
-        });
+//        registration = db.collection("chatbox").document(chatid).collection("chats").orderBy("time", Query.Direction.DESCENDING).whereEqualTo("sendBy", uid).limit(1).addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+//
+//                    speak(documentSnapshot.get("message").toString());
+//                }
+//            }
+//        });
 
 
     }
@@ -212,7 +207,7 @@ public class UsersChatActivity extends AppCompatActivity {
             mTTS.shutdown();
         }
         adapter.stopListening();
-        registration.remove();
+//        registration.remove();
         super.onDestroy();
     }
 
