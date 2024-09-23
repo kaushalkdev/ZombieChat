@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
 import com.example.zombiechat.account.data.models.UserModel;
-import com.example.zombiechat.chat.views.screens.UsersChatActivity;
+import com.example.zombiechat.chat.views.screens.ChatRoomActivity;
 import com.example.zombiechat.friends.data.repo.FriendsRepo;
 import com.example.zombiechat.friends.viewModels.FriendsVM;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,25 +53,14 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
             @Override
             public void onClick(View v) {
 
-                Intent chatIntent = new Intent(v.getContext(), UsersChatActivity.class);
+                Intent chatIntent = new Intent(v.getContext(), ChatRoomActivity.class);
                 UserModel userModel = userModels.get(i);
                 chatIntent.putExtra("uid", userModel.getUserid());
                 chatIntent.putExtra("image", userModel.getImage());
                 chatIntent.putExtra("name", userModel.getName());
                 chatIntent.putExtra("sex", userModel.getGender());
-                chatIntent.putExtra("chatid", "someRandomeChantId");
                 v.getContext().startActivity(chatIntent);
-//                friendsVM.
-//                db.collection("chatids").whereEqualTo(userModel.getUserid(), userModel.getUserid()).whereEqualTo(mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//
-//                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//
-//
-//                        }
-//                    }
-//                });
+
             }
         });
 

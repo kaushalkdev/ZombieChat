@@ -20,6 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
 import com.example.zombiechat.chat.data.models.SingleChatModel;
+import com.example.zombiechat.chat.data.repo.FirebaseChatRepo;
+import com.example.zombiechat.chat.viewModels.ChatRoomViewModel;
+import com.example.zombiechat.chat.views.adapters.ChatRoomAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,13 +34,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-
+import java.util.concurrent.ExecutionException;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class UsersChatActivity extends AppCompatActivity {
+public class ChatRoomActivity extends AppCompatActivity {
 
     public static final String TAG = "SmoothScroll";
     private TextToSpeech mTTS;
@@ -48,8 +51,9 @@ public class UsersChatActivity extends AppCompatActivity {
     private EditText userinput;
     private Button sendmessageBtn;
     private RecyclerView mrecyclerview;
-    private UsersChatAdapter adapter;
+    private ChatRoomAdapter adapter;
     private LinearLayoutManager mLayoutManager;
+    private ChatRoomViewModel chatRoomViewModel;
 //    ListenerRegistration registration;
 
 
@@ -57,6 +61,7 @@ public class UsersChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_chat);
+        chatRoomViewModel = new ChatRoomViewModel(new FirebaseChatRepo());
 
 
         mToolbar = findViewById(R.id.user_chat_app_bar);
@@ -81,12 +86,13 @@ public class UsersChatActivity extends AppCompatActivity {
 
         String name = getIntent().getStringExtra("name");
         String image = getIntent().getStringExtra("image");
-        String sex = getIntent().getStringExtra("sex");
-        final String uid = getIntent().getStringExtra("uid");
-        final String chatid = getIntent().getStringExtra("chatid");
-        Log.d(TAG, "chat activity: chatid: " + chatid);
+        String otherUserId = getIntent().getStringExtra("uid");
+
+
+        // TODO create chat id if not existed or fetch one from repo.
 
         //setting tool bar
+
         getSupportActionBar().setTitle(name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -94,7 +100,7 @@ public class UsersChatActivity extends AppCompatActivity {
         mrecyclerview = findViewById(R.id.user_chat_recycler_view);
         mrecyclerview.setHasFixedSize(true);
         // Now set the properties of the LinearLayoutManager
-        mLayoutManager = new LinearLayoutManager(UsersChatActivity.this);
+        mLayoutManager = new LinearLayoutManager(ChatRoomActivity.this);
 
         mLayoutManager.setStackFromEnd(true);
 
@@ -120,7 +126,7 @@ public class UsersChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(userinput.getText().toString())) {
-                    Toast.makeText(UsersChatActivity.this, "empty text", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatRoomActivity.this, "empty text", Toast.LENGTH_SHORT).show();
                 } else {
 
                     final String message = userinput.getText().toString();
@@ -130,12 +136,22 @@ public class UsersChatActivity extends AppCompatActivity {
                     HashMap<String, String> chatmap = new HashMap<>();
 
                     chatmap.put("message", message);
-                    chatmap.put("sentTO", uid);
+                    chatmap.put("sentTO", otherUserId);
                     chatmap.put("sendBy", mAuth.getCurrentUser().getUid());
                     Date currentTime = Calendar.getInstance().getTime();
                     chatmap.put("time", currentTime.toString());
 
-                    db.collection("chatbox").document(chatid).collection("chats").add(chatmap);
+                    final String chatRoomId;
+                    try {
+                        chatRoomId = chatRoomViewModel.getChatIdFor(otherUserId).get();
+                    } catch (ExecutionException e) {
+                        throw new RuntimeException(e);
+                    } catch (InterruptedException e) {
+
+
+                    }
+
+                    db.collection("chatbox").document(chatRoomId).collection("chats").add(chatmap);
 
 
                 }
@@ -158,12 +174,10 @@ public class UsersChatActivity extends AppCompatActivity {
 
         Query query = db.collection("chatbox").document(chatid).collection("chats").orderBy("time", Query.Direction.ASCENDING);
 
-        FirestoreRecyclerOptions<SingleChatModel> options = new FirestoreRecyclerOptions.Builder<SingleChatModel>().setQuery(query, SingleChatModel.class).build();
+        // TODO fetch chat list from firebase and set it to adapter
 
-        adapter = new UsersChatAdapter(options);
-        adapter.onDataChanged();
+        adapter = new ChatRoomAdapter();
         mrecyclerview.setAdapter(adapter);
-        adapter.startListening();
 
 
         //for speaking message only female voice currently
@@ -197,7 +211,7 @@ public class UsersChatActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+
     }
 
     @Override
@@ -206,122 +220,11 @@ public class UsersChatActivity extends AppCompatActivity {
             mTTS.stop();
             mTTS.shutdown();
         }
-        adapter.stopListening();
+
+
 //        registration.remove();
         super.onDestroy();
     }
 
-
-    class UsersChatAdapter extends FirestoreRecyclerAdapter<SingleChatModel, UsersChatViewHolder> {
-
-
-        private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
-
-        /**
-         * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-         * FirestoreRecyclerOptions} for configuration options.
-         *
-         * @param options
-         */
-        public UsersChatAdapter(@NonNull FirestoreRecyclerOptions<SingleChatModel> options) {
-            super(options);
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-
-            SingleChatModel model = getItem(position);
-
-            if (model.getSendBy().equals(mAuth.getCurrentUser().getUid())) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-        @Override
-        protected void onBindViewHolder(@NonNull UsersChatActivity.UsersChatViewHolder holder, int position, @NonNull SingleChatModel model) {
-
-
-            switch (holder.getItemViewType()) {
-
-                case 1: {
-                    final UsersChatActivity.UsersChatViewHolder viewHolder = holder;
-                    viewHolder.setIsRecyclable(false);
-                    Log.d("adapter", "other: " + model.getMessage());
-                    viewHolder.setCurrentMessage(model.getMessage());
-
-
-                }
-
-                break;
-
-                case 0: {
-                    final UsersChatActivity.UsersChatViewHolder viewHolder = holder;
-                    viewHolder.setIsRecyclable(false);
-                    Log.d("adapter", "current: " + model.getMessage());
-                    viewHolder.setOtherMessage(model.getMessage());
-
-                }
-                break;
-
-
-                default:
-                    break;
-            }
-
-
-        }
-
-
-        //added for updating the chat ui when new message received or sent
-
-        @Override
-        public void onDataChanged() {
-
-
-            if (getItemCount() > 0) {
-                mrecyclerview.smoothScrollToPosition(getItemCount());
-            }
-        }
-
-        @NonNull
-        @Override
-        public UsersChatActivity.UsersChatViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            if (i == 1) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.current_user_chat_layout, viewGroup, false);
-                return new UsersChatViewHolder(view);
-            } else {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.other_user_chat_layout, viewGroup, false);
-                return new UsersChatViewHolder(view);
-            }
-        }
-
-    }
-
-    class UsersChatViewHolder extends RecyclerView.ViewHolder {
-
-        TextView currentUserText;
-        TextView otherUserText;
-
-        public UsersChatViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-
-        }
-
-        public void setCurrentMessage(String message) {
-
-            currentUserText = itemView.findViewById(R.id.current_userchat);
-            currentUserText.setText(message);
-        }
-
-        public void setOtherMessage(String message) {
-            otherUserText = itemView.findViewById(R.id.other_userchat);
-            otherUserText.setText(message);
-
-        }
-    }
 
 }

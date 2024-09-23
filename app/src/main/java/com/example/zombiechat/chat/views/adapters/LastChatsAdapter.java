@@ -2,7 +2,6 @@ package com.example.zombiechat.chat.views.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.zombiechat.R;
 import com.example.zombiechat.account.data.models.UserModel;
 import com.example.zombiechat.chat.data.models.LastChatModel;
-import com.example.zombiechat.chat.views.screens.UsersChatActivity;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

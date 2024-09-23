@@ -1,5 +1,7 @@
 package com.example.zombiechat.chat.viewModels;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -23,8 +25,12 @@ public class ChatListViewModel extends ViewModel {
     }
 
     public void fetchLastChats() throws ExecutionException, InterruptedException {
+        try {
+            List<LastChatModel> fetchedLastChats = repo.getLastChats().get();
+            lastChats.postValue(fetchedLastChats);
+        } catch (Exception e) {
+            Log.d("ChatListViewModel", "fetchLastChats: " + e.getMessage());
+        }
 
-        List<LastChatModel> fetchedLastChats = repo.getLastChats().get();
-        lastChats.postValue(fetchedLastChats);
     }
 }

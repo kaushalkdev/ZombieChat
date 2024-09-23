@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
 import com.example.zombiechat.chat.data.models.LastChatModel;
-import com.example.zombiechat.chat.data.repo.ChatRepoImpl;
+import com.example.zombiechat.chat.data.repo.FirebaseChatRepo;
 import com.example.zombiechat.chat.viewModels.ChatListViewModel;
 import com.example.zombiechat.chat.views.adapters.LastChatsAdapter;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -22,14 +22,14 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class ChatFragment extends Fragment {
+public class ChatListFragment extends Fragment {
 
     public static final String TAG = "ChatFragment";
     private RecyclerView mrecyclerview;
     private LastChatsAdapter adapter;
     List<LastChatModel> chatsList = new ArrayList<>();
     ListenerRegistration registration;
-    private final ChatListViewModel chatListViewModel = new ChatListViewModel(new ChatRepoImpl());
+    private final ChatListViewModel chatListViewModel = new ChatListViewModel(new FirebaseChatRepo());
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

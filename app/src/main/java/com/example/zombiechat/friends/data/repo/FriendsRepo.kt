@@ -39,7 +39,6 @@ class FriendsRepo {
                     .get().await().documents.map { it.toObject(FriendsModel::class.java) }
 
 
-
             // filter out the friends from the user collection.
             val alUsersSnapshot =
                 userCollection.whereIn("userid", friendsList.map { it?.friendId }).get()
@@ -63,6 +62,11 @@ class FriendsRepo {
         try {
             // find all the requests sent to the current user.
             val requestsSnapshots = requestsColl.whereEqualTo("sentTo", currentUserId).get().await()
+
+
+            if (requestsSnapshots.isEmpty) {
+                return requests
+            }
 
             // find all the users who sent the requests.
             val allUsersSnapshot =
