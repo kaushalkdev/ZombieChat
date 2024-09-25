@@ -13,5 +13,14 @@ class Fields {
         const val message = "message"
         const val chatId = "chatId"
         const val gender = "gender"
+        const val otherUserId = "otherUserId"
+        const val otherUserImage = "otherUserImage"
+        const val otherUserName = "otherUserName"
+        const val otherUserGender = "otherUserGender"
+        const val chatRoomId = "chatRoomId"
+
+
     }
+
+
 }

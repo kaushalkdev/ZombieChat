@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.zombiechat.R;
 import com.example.zombiechat.account.data.models.UserModel;
 import com.example.zombiechat.chat.views.screens.ChatRoomActivity;
+import com.example.zombiechat.constants.fields.Fields;
+import com.example.zombiechat.friends.data.models.NewFriendsModel;
 import com.example.zombiechat.friends.data.repo.FriendsRepo;
 import com.example.zombiechat.friends.viewModels.FriendsVM;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,10 +31,10 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
 
     public static final String TAG = "FriendsRecyclerAdapter";
 
-    private List<UserModel> userModels;
+    private List<NewFriendsModel> userModels;
     private FriendsVM friendsVM = new FriendsVM(new FriendsRepo());
 
-    public FriendsRecyclerAdapter(List<UserModel> friends) {
+    public FriendsRecyclerAdapter(List<NewFriendsModel> friends) {
         this.userModels = friends;
 
     }
@@ -46,20 +48,21 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final friendsViewHolder mViewHolder, int i) {
-        mViewHolder.username.setText(userModels.get(i).getName());
-        mViewHolder.userstatus.setText(userModels.get(i).getStatus());
-        mViewHolder.setImage(userModels.get(i).getImage());
+        mViewHolder.username.setText(userModels.get(i).getUserName());
+        mViewHolder.userstatus.setText(userModels.get(i).getUserStatus());
+        mViewHolder.setImage(userModels.get(i).getUserImage());
         mViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent chatIntent = new Intent(v.getContext(), ChatRoomActivity.class);
-                UserModel userModel = userModels.get(i);
-                chatIntent.putExtra("uid", userModel.getUserid());
-                chatIntent.putExtra("image", userModel.getImage());
-                chatIntent.putExtra("name", userModel.getName());
-                chatIntent.putExtra("sex", userModel.getGender());
-                v.getContext().startActivity(chatIntent);
+                Intent chatRoomIntent = new Intent(v.getContext(), ChatRoomActivity.class);
+                NewFriendsModel userModel = userModels.get(i);
+                chatRoomIntent.putExtra(Fields.otherUserId, userModel.getUserid());
+                chatRoomIntent.putExtra(Fields.otherUserImage, userModel.getUserImage());
+                chatRoomIntent.putExtra(Fields.otherUserName, userModel.getUserName());
+                chatRoomIntent.putExtra(Fields.chatRoomId, userModel.getChatRoomId());
+
+                v.getContext().startActivity(chatRoomIntent);
 
             }
         });

@@ -1,17 +1,14 @@
 package com.example.zombiechat.friends.data.repo
 
-import android.widget.Toast
 import com.example.zombiechat.account.data.models.RequestModel
 import com.example.zombiechat.account.data.models.UserModel
 import com.example.zombiechat.constants.api.collections.Collections
 import com.example.zombiechat.friends.data.models.FriendsModel
+import com.example.zombiechat.friends.data.models.NewFriendsModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.tasks.await
 
 class FriendsRepo {
@@ -27,9 +24,9 @@ class FriendsRepo {
     private var currentUserId: String? = FirebaseAuth.getInstance().uid
 
 
-    suspend fun getAllFriends(): List<UserModel> {
+    suspend fun getAllFriends(): List<NewFriendsModel> {
 
-        val friends: MutableList<UserModel> = mutableListOf()
+        val friends: MutableList<NewFriendsModel> = mutableListOf()
 
         try {
 
@@ -45,7 +42,17 @@ class FriendsRepo {
                     .await().documents
             for (user in alUsersSnapshot) {
                 if (friendsList.map { it?.friendId }.contains(user.id)) {
-                    user.toObject(UserModel::class.java)?.let { friends.add(it) }
+                    user.toObject(UserModel::class.java)?.let {
+                        friends.add(
+                            NewFriendsModel(
+                                it.userid,
+                                it.name,
+                                it.image,
+                                it.status,
+                                friendsList.find { it?.friendId == user.id }?.chatRoomId
+                            )
+                        )
+                    }
                 }
             }
 
@@ -136,5 +143,6 @@ class FriendsRepo {
         }
 
     }
+
 
 }
