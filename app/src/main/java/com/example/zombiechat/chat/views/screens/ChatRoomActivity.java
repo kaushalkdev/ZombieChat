@@ -23,8 +23,10 @@ import com.example.zombiechat.chat.data.models.SingleChatModel;
 import com.example.zombiechat.chat.data.repo.FirebaseChatRepo;
 import com.example.zombiechat.chat.viewModels.ChatRoomViewModel;
 import com.example.zombiechat.chat.views.adapters.ChatRoomAdapter;
+import com.example.zombiechat.constants.fields.Fields;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -54,6 +56,10 @@ public class ChatRoomActivity extends AppCompatActivity {
     private ChatRoomAdapter adapter;
     private LinearLayoutManager mLayoutManager;
     private ChatRoomViewModel chatRoomViewModel;
+    private String otherUserId;
+    private String chatRoomId;
+    private String otherUserImage;
+    private String otherUserName;
 //    ListenerRegistration registration;
 
 
@@ -84,16 +90,14 @@ public class ChatRoomActivity extends AppCompatActivity {
         });
 
 
-        String name = getIntent().getStringExtra("name");
-        String image = getIntent().getStringExtra("image");
-        String otherUserId = getIntent().getStringExtra("uid");
+        otherUserName = getIntent().getStringExtra(Fields.otherUserName);
+        otherUserImage = getIntent().getStringExtra(Fields.otherUserImage);
+        otherUserId = getIntent().getStringExtra(Fields.otherUserId);
+        chatRoomId = getIntent().getStringExtra(Fields.chatRoomId);
 
-
-        // TODO create chat id if not existed or fetch one from repo.
 
         //setting tool bar
-
-        getSupportActionBar().setTitle(name);
+        getSupportActionBar().setTitle(otherUserName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //recyclerview
@@ -104,17 +108,13 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         mLayoutManager.setStackFromEnd(true);
 
-// And now set it to the RecyclerView
+        // And now set it to the RecyclerView
         mrecyclerview.setLayoutManager(mLayoutManager);
 
 
-        //firebase
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-
         muserimage = findViewById(R.id.user_image);
         //setting image
-        Picasso.with(getApplicationContext()).load(image).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(muserimage);
+        Picasso.with(getApplicationContext()).load(otherUserImage).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(muserimage);
 
 
         //button and edit text
@@ -133,25 +133,16 @@ public class ChatRoomActivity extends AppCompatActivity {
                     userinput.setText("");
 
 
-                    HashMap<String, String> chatmap = new HashMap<>();
+                    SingleChatModel chat = new SingleChatModel();
 
-                    chatmap.put("message", message);
-                    chatmap.put("sentTO", otherUserId);
-                    chatmap.put("sendBy", mAuth.getCurrentUser().getUid());
-                    Date currentTime = Calendar.getInstance().getTime();
-                    chatmap.put("time", currentTime.toString());
-
-                    final String chatRoomId;
-                    try {
-                        chatRoomId = chatRoomViewModel.getChatIdFor(otherUserId).get();
-                    } catch (ExecutionException e) {
-                        throw new RuntimeException(e);
-                    } catch (InterruptedException e) {
+                    chat.setMessage(message);
+                    chat.setSentTo(otherUserId);
+                    chat.setSendBy(mAuth.getCurrentUser().getUid());
+                    Timestamp currentTime = Timestamp.now();
+                    chat.setTime(currentTime);
 
 
-                    }
-
-                    db.collection("chatbox").document(chatRoomId).collection("chats").add(chatmap);
+                    // TODO send chat to server
 
 
                 }
@@ -168,16 +159,13 @@ public class ChatRoomActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        final String chatid = getIntent().getStringExtra("chatid");
-        final String uid = getIntent().getStringExtra("uid");
 
-
-        Query query = db.collection("chatbox").document(chatid).collection("chats").orderBy("time", Query.Direction.ASCENDING);
+//        Query query = db.collection("chatbox").document(chatid).collection("chats").orderBy("time", Query.Direction.ASCENDING);
 
         // TODO fetch chat list from firebase and set it to adapter
-
-        adapter = new ChatRoomAdapter();
-        mrecyclerview.setAdapter(adapter);
+//
+//        adapter = new ChatRoomAdapter();
+//        mrecyclerview.setAdapter(adapter);
 
 
         //for speaking message only female voice currently
