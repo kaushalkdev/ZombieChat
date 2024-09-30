@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".chat.views.screens.ChatRoomActivity"
+            android:name=".chat.views.screens.activities.ChatRoomScreen"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".account.view.UserProfile"

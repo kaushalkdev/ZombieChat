@@ -1,18 +1,14 @@
-package com.example.zombiechat.chat.views.screens;
+package com.example.zombiechat.chat.views.screens.activities;
 
 import android.speech.tts.TextToSpeech;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,25 +20,18 @@ import com.example.zombiechat.chat.data.repo.FirebaseChatRepo;
 import com.example.zombiechat.chat.viewModels.ChatRoomViewModel;
 import com.example.zombiechat.chat.views.adapters.ChatRoomAdapter;
 import com.example.zombiechat.constants.fields.Fields;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ChatRoomActivity extends AppCompatActivity {
+public class ChatRoomScreen extends AppCompatActivity {
 
     public static final String TAG = "SmoothScroll";
     private TextToSpeech mTTS;
@@ -89,7 +78,7 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         });
 
-
+        // values fetched from intent to get the chat up and running.
         otherUserName = getIntent().getStringExtra(Fields.otherUserName);
         otherUserImage = getIntent().getStringExtra(Fields.otherUserImage);
         otherUserId = getIntent().getStringExtra(Fields.otherUserId);
@@ -104,7 +93,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         mrecyclerview = findViewById(R.id.user_chat_recycler_view);
         mrecyclerview.setHasFixedSize(true);
         // Now set the properties of the LinearLayoutManager
-        mLayoutManager = new LinearLayoutManager(ChatRoomActivity.this);
+        mLayoutManager = new LinearLayoutManager(ChatRoomScreen.this);
 
         mLayoutManager.setStackFromEnd(true);
 
@@ -122,33 +111,21 @@ public class ChatRoomActivity extends AppCompatActivity {
         userinput = findViewById(R.id.chat_box_inout_text);
 
 
-        sendmessageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(userinput.getText().toString())) {
-                    Toast.makeText(ChatRoomActivity.this, "empty text", Toast.LENGTH_SHORT).show();
-                } else {
+        sendmessageBtn.setOnClickListener(v -> {
+            if (TextUtils.isEmpty(userinput.getText().toString())) {
+                Toast.makeText(ChatRoomScreen.this, "empty text", Toast.LENGTH_SHORT).show();
+            } else {
 
-                    final String message = userinput.getText().toString();
-                    userinput.setText("");
+                final String message = userinput.getText().toString();
+                userinput.setText("");
 
-
-                    SingleChatModel chat = new SingleChatModel();
-
-                    chat.setMessage(message);
-                    chat.setSentTo(otherUserId);
-                    chat.setSendBy(mAuth.getCurrentUser().getUid());
-                    Timestamp currentTime = Timestamp.now();
-                    chat.setTime(currentTime);
-
-
-                    // TODO send chat to server
-
-
-                }
+                // sending chat to server
+                chatRoomViewModel.sendMessage(message, otherUserId, chatRoomId);
 
 
             }
+
+
         });
 
 

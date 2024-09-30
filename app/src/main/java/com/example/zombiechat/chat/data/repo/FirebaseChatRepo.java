@@ -9,6 +9,7 @@ import com.example.zombiechat.chat.data.models.SingleChatModel;
 import com.example.zombiechat.constants.api.collections.Collections;
 import com.example.zombiechat.constants.fields.Fields;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -66,7 +67,7 @@ public class FirebaseChatRepo implements ChatRepo {
                                 userTask.addOnSuccessListener(user -> {
 
                                     UserModel userModel = user.toObject(UserModel.class);
-                                    LastChatModel lastChatModel = new LastChatModel(chatRoomModel.getChatRoomId(), Objects.requireNonNull(singleChatModel).getMessage(), Objects.requireNonNull(userModel).getImage(), userModel.getName(), Objects.requireNonNull(singleChatModel).getTime()
+                                    LastChatModel lastChatModel = new LastChatModel(chatRoomModel.getChatRoomId(), Objects.requireNonNull(singleChatModel).getMessage(), Objects.requireNonNull(userModel).getImage(), userModel.getName(), userModel.getUserid(), Objects.requireNonNull(singleChatModel).getTime()
 
                                     );
 
@@ -93,5 +94,15 @@ public class FirebaseChatRepo implements ChatRepo {
     public Future<String> getChatId(String otherUserId) {
         return CompletableFuture.supplyAsync(() -> friendsCollection.document(currentUser).collection(Collections.chatIdCollection).document(otherUserId).get().getResult().getString("chatId"));
 
+    }
+
+    @Override
+    public void sendMessage(String message, String sendTo, String chatRoomId) {
+        SingleChatModel singleChatModel = new SingleChatModel();
+        singleChatModel.setMessage(message);
+        singleChatModel.setSendBy(currentUser);
+        singleChatModel.setSentTo(sendTo);
+        singleChatModel.setTime(Timestamp.now());
+        chatCollections.document(chatRoomId).collection(Collections.chatCollection).add(singleChatModel);
     }
 }

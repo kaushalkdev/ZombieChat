@@ -12,8 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
-import com.example.zombiechat.account.data.models.UserModel;
-import com.example.zombiechat.chat.views.screens.ChatRoomActivity;
+import com.example.zombiechat.chat.views.screens.activities.ChatRoomScreen;
 import com.example.zombiechat.constants.fields.Fields;
 import com.example.zombiechat.friends.data.models.NewFriendsModel;
 import com.example.zombiechat.friends.data.repo.FriendsRepo;
@@ -55,7 +54,7 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<friendsViewHold
             @Override
             public void onClick(View v) {
 
-                Intent chatRoomIntent = new Intent(v.getContext(), ChatRoomActivity.class);
+                Intent chatRoomIntent = new Intent(v.getContext(), ChatRoomScreen.class);
                 NewFriendsModel userModel = userModels.get(i);
                 chatRoomIntent.putExtra(Fields.otherUserId, userModel.getUserid());
                 chatRoomIntent.putExtra(Fields.otherUserImage, userModel.getUserImage());

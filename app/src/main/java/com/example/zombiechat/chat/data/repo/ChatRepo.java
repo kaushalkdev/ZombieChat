@@ -15,5 +15,7 @@ public interface ChatRepo {
 
     Future<String> getChatId(String otherUserId);
 
+    public void sendMessage(String message, String sendTo, String chatRoomId);
+
 
 }

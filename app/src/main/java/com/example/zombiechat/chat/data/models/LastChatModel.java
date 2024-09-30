@@ -7,14 +7,18 @@ public class LastChatModel {
     final String msg;
     final String userImage;
     final String userName;
+    final String userId;
     final Timestamp msgTime;
 
-    public LastChatModel(String chatId, String msg, String userImage, String userName, Timestamp msgTime) {
+
+    public LastChatModel(String chatId, String msg, String userImage, String userName, String userId, Timestamp msgTime) {
         this.chatId = chatId;
         this.msg = msg;
         this.userImage = userImage;
         this.userName = userName;
+        this.userId = userId;
         this.msgTime = msgTime;
+
     }
 
 
@@ -36,6 +40,11 @@ public class LastChatModel {
 
     public Timestamp getMsgTime() {
         return msgTime;
+    }
+
+
+    public String getUserId() {
+        return userId;
     }
 
 

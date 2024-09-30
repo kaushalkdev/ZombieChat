@@ -1,4 +1,4 @@
-package com.example.zombiechat.chat.views.screens;
+package com.example.zombiechat.chat.views.screens.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +14,7 @@ import com.example.zombiechat.R;
 import com.example.zombiechat.chat.data.models.LastChatModel;
 import com.example.zombiechat.chat.data.repo.FirebaseChatRepo;
 import com.example.zombiechat.chat.viewModels.ChatListViewModel;
-import com.example.zombiechat.chat.views.adapters.LastChatsAdapter;
+import com.example.zombiechat.chat.views.adapters.ChatsListAdapter;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class ChatListFragment extends Fragment {
+public class ChatListScreen extends Fragment {
 
     public static final String TAG = "ChatFragment";
     private RecyclerView mrecyclerview;
-    private LastChatsAdapter adapter;
+    private ChatsListAdapter adapter;
     List<LastChatModel> chatsList = new ArrayList<>();
     ListenerRegistration registration;
     private final ChatListViewModel chatListViewModel = new ChatListViewModel(new FirebaseChatRepo());
@@ -43,7 +43,7 @@ public class ChatListFragment extends Fragment {
         chatListViewModel.getLastChats().observe(getViewLifecycleOwner(), lastChats -> {
             chatsList.clear();
             chatsList.addAll(lastChats);
-            adapter = new LastChatsAdapter(getContext(), chatsList);
+            adapter = new ChatsListAdapter(getContext(), chatsList);
             mrecyclerview.setAdapter(adapter);
 
         });
