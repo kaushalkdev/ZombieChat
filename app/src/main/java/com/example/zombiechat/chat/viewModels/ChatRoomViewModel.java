@@ -13,7 +13,7 @@ public class ChatRoomViewModel extends ViewModel {
         this.repo = repo;
     }
 
-    public Future<String> getChatIdFor(String otherUserId) {
+    public Future<String> getChatsFor(String otherUserId) {
         return repo.getChatId(otherUserId);
     }
 }

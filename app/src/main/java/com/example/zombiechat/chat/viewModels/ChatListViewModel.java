@@ -26,10 +26,11 @@ public class ChatListViewModel extends ViewModel {
 
     public void fetchLastChats() throws ExecutionException, InterruptedException {
         try {
-            List<LastChatModel> fetchedLastChats = repo.getLastChats().get();
-            lastChats.postValue(fetchedLastChats);
+            repo.getLastChats().thenAccept(lastChats::postValue);
+
+
         } catch (Exception e) {
-            Log.d("ChatListViewModel", "fetchLastChats: " + e.getMessage());
+            Log.d("ChatRepo", "fetchLastChats: " + e);
         }
 
     }
