@@ -1,13 +1,15 @@
 package com.example.zombiechat.chat.data.models;
 
+import com.google.firebase.Timestamp;
+
 public class LastChatModel {
     final String chatId;
     final String msg;
     final String userImage;
     final String userName;
-    final String msgTime;
+    final Timestamp msgTime;
 
-    public LastChatModel(String chatId, String msg, String userImage, String userName, String msgTime) {
+    public LastChatModel(String chatId, String msg, String userImage, String userName, Timestamp msgTime) {
         this.chatId = chatId;
         this.msg = msg;
         this.userImage = userImage;
@@ -32,7 +34,7 @@ public class LastChatModel {
         return userName;
     }
 
-    public String getMsgTime() {
+    public Timestamp getMsgTime() {
         return msgTime;
     }
 
