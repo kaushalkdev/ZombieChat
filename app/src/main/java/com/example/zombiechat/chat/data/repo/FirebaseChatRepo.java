@@ -2,71 +2,91 @@ package com.example.zombiechat.chat.data.repo;
 
 import android.util.Log;
 
+import com.example.zombiechat.account.data.models.UserModel;
+import com.example.zombiechat.chat.data.models.ChatRoomModel;
 import com.example.zombiechat.chat.data.models.LastChatModel;
+import com.example.zombiechat.chat.data.models.SingleChatModel;
 import com.example.zombiechat.constants.api.collections.Collections;
+import com.example.zombiechat.constants.fields.Fields;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class FirebaseChatRepo implements ChatRepo {
 
     final String currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-    final CollectionReference chatRoomCollectiom = FirebaseFirestore.getInstance().collection(Collections.chatRoomIds);
+    final CollectionReference chatRoomCollection = FirebaseFirestore.getInstance().collection(Collections.chatRoomIds);
     final CollectionReference chatCollections = FirebaseFirestore.getInstance().collection(Collections.chatCollection);
     final CollectionReference friendsCollection = FirebaseFirestore.getInstance().collection(Collections.friendsCollection);
+    final CollectionReference usersCollection = FirebaseFirestore.getInstance().collection(Collections.userCollection);
 
     @Override
-    public Future<List<LastChatModel>> getLastChats() {
+    public CompletableFuture<List<LastChatModel>> getLastChats() throws ExecutionException, InterruptedException {
+        List<LastChatModel> lastChatModels = new ArrayList<>();
+        CompletableFuture<List<LastChatModel>> future = new CompletableFuture<>();
 
-//        chatRoomCollectiom.get().addOnSuccessListener(queryDocumentSnapshots -> {
-//            List<DocumentSnapshot> chatBoxes = queryDocumentSnapshots.getDocuments();
-//            Log.d("ChatRepoImpl", "getLastChats: " + chatBoxes.size());
-//
-//            for (DocumentSnapshot chatBox : chatBoxes) {
-//                String chatId = chatBox.getId();
-//                List<DocumentSnapshot> chats = chatCollections.document(chatId).collection(Collections.chatCollection).get().getResult().getDocuments();
-//                // TODO add the logic to get the last chat
-//
-//            }
-//        });
-//        Log.d("ChatRepoImpl", "getLastChats: " + chatBoxes.size());
+        // Creating a task which will complete in future with charRoomIds
+        Task<QuerySnapshot> chatRoomTask = chatRoomCollection.document(currentUser).collection(Collections.chatRoomIds).get();
 
-//        for (DocumentSnapshot chatBox : chatBoxes) {
-//            String chatId = chatBox.getId();
-//            List<DocumentSnapshot> chats = chatCollections.document(chatId).collection(Collections.chatCollection).get().getResult().getDocuments();
-//            // TODO add the logic to get the last chat
-//
-//        }
-        CompletableFuture<List<LastChatModel>> lastChats = new CompletableFuture<>();
-        List<DocumentSnapshot> chatRoomIds = chatRoomCollectiom.document(currentUser).collection(Collections.chatRoomIds).get().getResult().getDocuments();
-        chatCollections.whereIn("chatId", chatRoomIds).get()
+        // Attaching success listener for now.
+        chatRoomTask.addOnSuccessListener(charRoomsSnapshot -> {
 
 
-                .addOnFailureListener(e -> Log.d("FirebaseChatRepo", "getLastChats: " + e.getMessage())).addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<LastChatModel> lastChatModels = new ArrayList<>();
-                    for (DocumentSnapshot chat : queryDocumentSnapshots.getDocuments()) {
-                        String chatId = chat.getId();
-                        List<DocumentSnapshot> chats = chatCollections.document(chatId).collection(Collections.chatCollection).get().getResult().getDocuments();
-                        String msg = chats.get(chats.size() - 1).getString("msg");
-                        String userImage = chats.get(chats.size() - 1).getString("userImage");
-                        String userName = chats.get(chats.size() - 1).getString("userName");
-                        String msgTime = chats.get(chats.size() - 1).getString("msgTime");
-                        lastChatModels.add(new LastChatModel(chatId, msg, userImage, userName, msgTime));
-                    }
-                    lastChats.complete(lastChatModels);
-                });
+            for (DocumentSnapshot chatRoom : charRoomsSnapshot.getDocuments()) {
+
+                // converting chatModel
+                ChatRoomModel chatRoomModel = Objects.requireNonNull(chatRoom.toObject(ChatRoomModel.class));
+
+                // task for chats in a chat room
+                Task<QuerySnapshot> chatsTaskForAChatRoom = chatCollections.document(chatRoomModel.getChatRoomId()).collection(Collections.chatCollection).orderBy(Fields.timestamp, Query.Direction.DESCENDING).limit(1).get();
+
+                // Attaching a success listener
+                chatsTaskForAChatRoom
 
 
-        return lastChats;
+                        .addOnSuccessListener(chats -> {
+                            for (DocumentSnapshot chat : chats.getDocuments()) {
+
+                                // task for user details to show in chat list with last message
+                                Task<DocumentSnapshot> userTask = usersCollection.document(chatRoomModel.getFriendId()).get();
+                                SingleChatModel singleChatModel = chat.toObject(SingleChatModel.class);
+
+                                // Attaching a success listener
+                                userTask.addOnSuccessListener(user -> {
+
+                                    UserModel userModel = user.toObject(UserModel.class);
+                                    LastChatModel lastChatModel = new LastChatModel(chatRoomModel.getChatRoomId(), Objects.requireNonNull(singleChatModel).getMessage(), Objects.requireNonNull(userModel).getImage(), userModel.getName(), Objects.requireNonNull(singleChatModel).getTime()
+
+                                    );
+
+                                    // Adding last chat model to list
+                                    lastChatModels.add(lastChatModel);
+                                    future.complete(lastChatModels);
+                                });
 
 
+                            }
+
+
+                        });
+            }
+
+
+        });
+
+
+        return future;
     }
 
     @Override
