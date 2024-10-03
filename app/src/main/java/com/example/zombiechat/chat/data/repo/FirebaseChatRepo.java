@@ -24,6 +24,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import io.reactivex.rxjava3.core.Observable;
+
 public class FirebaseChatRepo implements ChatRepo {
 
     final String currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -33,68 +35,66 @@ public class FirebaseChatRepo implements ChatRepo {
     final CollectionReference usersCollection = FirebaseFirestore.getInstance().collection(Collections.userCollection);
 
     @Override
-    public CompletableFuture<List<LastChatModel>> getLastChats() throws ExecutionException, InterruptedException {
+    public Observable<List<LastChatModel>> getLastChats() throws ExecutionException, InterruptedException {
         List<LastChatModel> lastChatModels = new ArrayList<>();
-        CompletableFuture<List<LastChatModel>> future = new CompletableFuture<>();
 
-        // Creating a task which will complete in future with charRoomIds
-        Task<QuerySnapshot> chatRoomTask = chatRoomCollection.document(currentUser).collection(Collections.chatRoomIds).get();
+        return Observable.create(emitter -> {
 
-        // Attaching success listener for now.
-        chatRoomTask.addOnSuccessListener(charRoomsSnapshot -> {
+            // Creating a task which will complete in future with charRoomIds
+            Task<QuerySnapshot> chatRoomTask = chatRoomCollection.document(currentUser).collection(Collections.chatRoomIds).get();
 
-
-            for (DocumentSnapshot chatRoom : charRoomsSnapshot.getDocuments()) {
-
-                // converting chatModel
-                ChatRoomModel chatRoomModel = Objects.requireNonNull(chatRoom.toObject(ChatRoomModel.class));
-
-                // task for chats in a chat room
-                Task<QuerySnapshot> chatsTaskForAChatRoom = chatCollections.document(chatRoomModel.getChatRoomId()).collection(Collections.chatCollection).orderBy(Fields.timestamp, Query.Direction.DESCENDING).limit(1).get();
-
-                // Attaching a success listener
-                chatsTaskForAChatRoom
+            // Attaching success listener for now.
+            chatRoomTask.addOnSuccessListener(charRoomsSnapshot -> {
 
 
-                        .addOnSuccessListener(chats -> {
-                            for (DocumentSnapshot chat : chats.getDocuments()) {
+                for (DocumentSnapshot chatRoom : charRoomsSnapshot.getDocuments()) {
 
-                                // task for user details to show in chat list with last message
-                                Task<DocumentSnapshot> userTask = usersCollection.document(chatRoomModel.getFriendId()).get();
-                                SingleChatModel singleChatModel = chat.toObject(SingleChatModel.class);
+                    // converting chatModel
+                    ChatRoomModel chatRoomModel = Objects.requireNonNull(chatRoom.toObject(ChatRoomModel.class));
 
-                                // Attaching a success listener
-                                userTask.addOnSuccessListener(user -> {
+                    // task for chats in a chat room
+                    Task<QuerySnapshot> chatsTaskForAChatRoom = chatCollections.document(chatRoomModel.getChatRoomId()).collection(Collections.chatCollection).orderBy(Fields.timestamp, Query.Direction.DESCENDING).limit(1).get();
 
-                                    UserModel userModel = user.toObject(UserModel.class);
-                                    LastChatModel lastChatModel = new LastChatModel(chatRoomModel.getChatRoomId(), Objects.requireNonNull(singleChatModel).getMessage(), Objects.requireNonNull(userModel).getImage(), userModel.getName(), userModel.getUserid(), Objects.requireNonNull(singleChatModel).getTime()
-
-                                    );
-
-                                    // Adding last chat model to list
-                                    lastChatModels.add(lastChatModel);
-                                    future.complete(lastChatModels);
-                                });
+                    // Attaching a success listener
+                    chatsTaskForAChatRoom
 
 
-                            }
+                            .addOnSuccessListener(chats -> {
+                                for (DocumentSnapshot chat : chats.getDocuments()) {
+
+                                    // task for user details to show in chat list with last message
+                                    Task<DocumentSnapshot> userTask = usersCollection.document(chatRoomModel.getFriendId()).get();
+                                    SingleChatModel singleChatModel = chat.toObject(SingleChatModel.class);
+
+                                    // Attaching a success listener
+                                    userTask.addOnSuccessListener(user -> {
+
+                                        UserModel userModel = user.toObject(UserModel.class);
+                                        LastChatModel lastChatModel = new LastChatModel(chatRoomModel.getChatRoomId(), Objects.requireNonNull(singleChatModel).getMessage(), Objects.requireNonNull(userModel).getImage(), userModel.getName(), userModel.getUserid(), Objects.requireNonNull(singleChatModel).getTime()
+
+                                        );
+
+                                        // Adding last chat model to list
+                                        lastChatModels.add(lastChatModel);
+                                        emitter.onNext(lastChatModels);
+                                    });
 
 
-                        });
-            }
+                                }
+
+
+                            });
+                }
+
+
+            });
 
 
         });
 
 
-        return future;
     }
 
-    @Override
-    public Future<String> getChatId(String otherUserId) {
-        return CompletableFuture.supplyAsync(() -> friendsCollection.document(currentUser).collection(Collections.chatIdCollection).document(otherUserId).get().getResult().getString("chatId"));
-
-    }
 
     @Override
     public void sendMessage(String message, String sendTo, String chatRoomId) {

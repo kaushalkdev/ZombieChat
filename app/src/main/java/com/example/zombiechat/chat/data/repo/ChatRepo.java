@@ -9,13 +9,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Future;
 
+import io.reactivex.rxjava3.core.Observable;
+
 public interface ChatRepo {
 
-    CompletableFuture<List<LastChatModel>> getLastChats() throws ExecutionException, InterruptedException;
+    Observable<List<LastChatModel>> getLastChats() throws ExecutionException, InterruptedException;
 
-    Future<String> getChatId(String otherUserId);
 
-    public void sendMessage(String message, String sendTo, String chatRoomId);
+    void sendMessage(String message, String sendTo, String chatRoomId);
 
 
 }

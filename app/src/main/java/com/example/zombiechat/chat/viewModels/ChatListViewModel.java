@@ -11,6 +11,9 @@ import com.example.zombiechat.chat.data.repo.ChatRepo;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class ChatListViewModel extends ViewModel {
     final ChatRepo repo;
 
@@ -26,8 +29,8 @@ public class ChatListViewModel extends ViewModel {
 
     public void fetchLastChats() throws ExecutionException, InterruptedException {
         try {
-            repo.getLastChats().thenAccept(lastChats::postValue);
-
+            // TODO dispose the subscriber when viewmodel is destroyed
+            Disposable subscribe = repo.getLastChats().observeOn(Schedulers.io()).subscribe(lastChats::postValue);
 
         } catch (Exception e) {
             Log.d("ChatRepo", "fetchLastChats: " + e);
