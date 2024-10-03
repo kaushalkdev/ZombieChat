@@ -135,27 +135,11 @@ public class ChatRoomScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
-//        Query query = db.collection("chatbox").document(chatid).collection("chats").orderBy("time", Query.Direction.ASCENDING);
-
-        // TODO fetch chat list from firebase and set it to adapter
-//
-//        adapter = new ChatRoomAdapter();
-//        mrecyclerview.setAdapter(adapter);
-
-
-        //for speaking message only female voice currently
-
-//        registration = db.collection("chatbox").document(chatid).collection("chats").orderBy("time", Query.Direction.DESCENDING).whereEqualTo("sendBy", uid).limit(1).addSnapshotListener(this, new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//
-//                    speak(documentSnapshot.get("message").toString());
-//                }
-//            }
-//        });
+        chatRoomViewModel.getActivesChats().observe(this, chatModels -> {
+            adapter = new ChatRoomAdapter(chatModels);
+            mrecyclerview.setAdapter(adapter);
+        });
+        chatRoomViewModel.fetchActiveChats(chatRoomId);
 
 
     }

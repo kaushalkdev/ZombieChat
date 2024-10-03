@@ -15,7 +15,7 @@ public interface ChatRepo {
 
     Observable<List<LastChatModel>> getLastChats() throws ExecutionException, InterruptedException;
 
-
+    Observable<List<SingleChatModel>> getActiveChats(String chatRoomId);
     void sendMessage(String message, String sendTo, String chatRoomId);
 
 

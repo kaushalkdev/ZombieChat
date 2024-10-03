@@ -92,6 +92,10 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.UsersC
     @Override
     public void onBindViewHolder(@NonNull UsersChatViewHolder holder, int position) {
 
+        SingleChatModel model = chatList.get(position);
+        // TODO set the messages for the current user and the other user
+        holder.setOtherMessage(model.getMessage());
+
     }
 
     static class UsersChatViewHolder extends RecyclerView.ViewHolder {

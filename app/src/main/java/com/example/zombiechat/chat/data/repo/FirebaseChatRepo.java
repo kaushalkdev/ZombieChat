@@ -37,6 +37,7 @@ public class FirebaseChatRepo implements ChatRepo {
     @Override
     public Observable<List<LastChatModel>> getLastChats() throws ExecutionException, InterruptedException {
         List<LastChatModel> lastChatModels = new ArrayList<>();
+        // TODO : fix the order of list view in streams.
 
         return Observable.create(emitter -> {
 
@@ -93,6 +94,21 @@ public class FirebaseChatRepo implements ChatRepo {
         });
 
 
+    }
+
+    @Override
+    public Observable<List<SingleChatModel>> getActiveChats(String chatRoomId) {
+        List<SingleChatModel> singleChatModels = new ArrayList<>();
+        return Observable.create(emitter -> {
+            Task<QuerySnapshot> chatTask = chatCollections.document(chatRoomId).collection(Collections.chatCollection).orderBy(Fields.timestamp, Query.Direction.ASCENDING).get();
+            chatTask.addOnSuccessListener(chats -> {
+                for (DocumentSnapshot chat : chats.getDocuments()) {
+                    SingleChatModel singleChatModel = chat.toObject(SingleChatModel.class);
+                    singleChatModels.add(singleChatModel);
+                    emitter.onNext(singleChatModels);
+                }
+            });
+        });
     }
 
 
