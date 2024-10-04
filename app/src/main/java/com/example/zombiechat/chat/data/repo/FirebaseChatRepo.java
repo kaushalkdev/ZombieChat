@@ -100,14 +100,22 @@ public class FirebaseChatRepo implements ChatRepo {
     public Observable<List<SingleChatModel>> getActiveChats(String chatRoomId) {
         List<SingleChatModel> singleChatModels = new ArrayList<>();
         return Observable.create(emitter -> {
-            Task<QuerySnapshot> chatTask = chatCollections.document(chatRoomId).collection(Collections.chatCollection).orderBy(Fields.timestamp, Query.Direction.ASCENDING).get();
-            chatTask.addOnSuccessListener(chats -> {
-                for (DocumentSnapshot chat : chats.getDocuments()) {
-                    SingleChatModel singleChatModel = chat.toObject(SingleChatModel.class);
-                    singleChatModels.add(singleChatModel);
-                    emitter.onNext(singleChatModels);
-                }
-            });
+            chatCollections.document(chatRoomId).collection(Collections.chatCollection).orderBy(Fields.timestamp, Query.Direction.ASCENDING).addSnapshotListener(
+                    (value, error) -> {
+                        if (error != null) {
+                            Log.e("ChatRepo", "Error in getting chat messages", error);
+                        }
+                        if (value != null) {
+                            for (DocumentSnapshot chat : value.getDocuments()) {
+                                SingleChatModel singleChatModel = chat.toObject(SingleChatModel.class);
+                                singleChatModels.add(singleChatModel);
+                                emitter.onNext(singleChatModels);
+                            }
+                        }
+                    }
+            );
+
+
         });
     }
 
