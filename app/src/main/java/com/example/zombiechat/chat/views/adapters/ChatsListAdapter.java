@@ -47,6 +47,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.Last
         holder.userLastMsg.setText(chatBox.getMsg());
         holder.userName.setText(chatBox.getUserName());
         holder.setUserImage(chatBox.getUserImage());
+        holder.msgDateTime.setText(chatBox.getMsgTime().toDate().toString());
         holder.itemView.setOnClickListener(v -> {
             Intent chatRoomIntent = new Intent(activity, ChatRoomScreen.class);
             chatRoomIntent.putExtra(Fields.otherUserName, chatBox.getUserName());
@@ -69,6 +70,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.Last
         CircleImageView userImage;
         TextView userName;
         TextView userLastMsg;
+        TextView msgDateTime;
 
 
         public LastChatHolder(View itemView) {
@@ -77,6 +79,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.Last
             userImage = itemView.findViewById(R.id.user_image);
             userName = itemView.findViewById(R.id.user_name);
             userLastMsg = itemView.findViewById(R.id.user_message);
+            msgDateTime = itemView.findViewById(R.id.last_msg_date);
 
 
         }

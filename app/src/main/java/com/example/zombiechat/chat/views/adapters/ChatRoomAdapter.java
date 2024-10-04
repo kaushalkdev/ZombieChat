@@ -10,8 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
 import com.example.zombiechat.chat.data.models.SingleChatModel;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.UsersChatViewHolder> {
@@ -28,13 +31,10 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.UsersC
     public int getItemViewType(int position) {
 
         SingleChatModel model = chatList.get(position);
+        String currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        // Adding this check as we want to differentiate messages sent by the current user and the other user
+        return model.getSendBy().equals(currentUserId) ? UserTypes.currentUser : UserTypes.otherUser;
 
-//        if (model.getSendBy().equals(mAuth.getCurrentUser().getUid())) {
-//            return 1;
-//        } else {
-//            return 0;
-//        }
-        return 0;
     }
 
     @Override
@@ -42,59 +42,38 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.UsersC
         return chatList.size();
     }
 
-//    @Override
-//    protected void onBindViewHolder(@NonNull UsersChatViewHolder holder, int position, @NonNull SingleChatModel model) {
-//
-//
-//        switch (holder.getItemViewType()) {
-//
-//            case 1: {
-//                final ChatRoomActivity.UsersChatViewHolder viewHolder = holder;
-//                viewHolder.setIsRecyclable(false);
-//                Log.d("adapter", "other: " + model.getMessage());
-//                viewHolder.setCurrentMessage(model.getMessage());
-//
-//
-//            }
-//
-//            break;
-//
-//            case 0: {
-//                final ChatRoomActivity.UsersChatViewHolder viewHolder = holder;
-//                viewHolder.setIsRecyclable(false);
-//                Log.d("adapter", "current: " + model.getMessage());
-//                viewHolder.setOtherMessage(model.getMessage());
-//
-//            }
-//            break;
-//
-//
-//            default:
-//                break;
-//        }
-//
-//
-//    }
-
 
     @NonNull
     @Override
-    public UsersChatViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        if (i == 1) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.current_user_chat_layout, viewGroup, false);
-            return new UsersChatViewHolder(view);
+    public UsersChatViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int userType) {
+
+
+        View view;
+        // Inflating correct layout based on the user type
+        if (userType == UserTypes.otherUser) {
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.other_user_chat_layout, viewGroup, false);
         } else {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.other_user_chat_layout, viewGroup, false);
-            return new UsersChatViewHolder(view);
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.current_user_chat_layout, viewGroup, false);
         }
+        return new UsersChatViewHolder(view);
+
+
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull UsersChatViewHolder holder, int position) {
 
         SingleChatModel model = chatList.get(position);
-        // TODO set the messages for the current user and the other user
-        holder.setOtherMessage(model.getMessage());
+
+        // set the messages for the current user and the other user by checking the item view type
+        int userType = holder.getItemViewType();
+        if (userType == UserTypes.currentUser) {
+            holder.setCurrentMessage(model.getMessage(), model.getTime());
+        } else {
+            holder.setOtherMessage(model.getMessage(), model.getTime());
+        }
+
 
     }
 
@@ -102,6 +81,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.UsersC
 
         TextView currentUserText;
         TextView otherUserText;
+        TextView dateTime;
 
         public UsersChatViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -109,19 +89,28 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.UsersC
 
         }
 
-        public void setCurrentMessage(String message) {
+        public void setCurrentMessage(String message, Timestamp msgDateTime) {
 
             currentUserText = itemView.findViewById(R.id.current_userchat);
+            dateTime = itemView.findViewById(R.id.current_user_message_date);
             currentUserText.setText(message);
+            dateTime.setText(msgDateTime.toDate().toString());
         }
 
-        public void setOtherMessage(String message) {
+        public void setOtherMessage(String message, Timestamp msgDateTime) {
             otherUserText = itemView.findViewById(R.id.other_userchat);
+            dateTime = itemView.findViewById(R.id.other_user_message_date);
             otherUserText.setText(message);
+            dateTime.setText(msgDateTime.toDate().toString());
 
         }
     }
 
+    static class UserTypes {
+        static final int currentUser = 1;
+        static final int otherUser = 2;
+
+    }
 }
 
 
