@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zombiechat.R
 import com.example.zombiechat.account.data.models.UserModel
+import com.example.zombiechat.friends.data.models.NewFriendsModel
 import com.example.zombiechat.friends.data.repo.FriendsRepo
 import com.example.zombiechat.friends.viewModels.FriendsVM
 import kotlinx.coroutines.runBlocking
@@ -44,7 +45,7 @@ class FriendsFragment : Fragment() {
             friendsVM!!.fetchAllFriends()
         }
 
-        friendsVM!!.getAllFriends().observe(this) { userModels: List<UserModel?>? ->
+        friendsVM!!.getAllFriends().observe(this) { userModels: List<NewFriendsModel?>? ->
             madapter = FriendsRecyclerAdapter(userModels)
             mrecyclerview!!.adapter = madapter
         }

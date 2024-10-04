@@ -1,6 +1,6 @@
-package com.example.zombiechat.chat;
+package com.example.zombiechat.chat.data.models;
 
-public class Chat {
+public class ChatModel {
 
     //sequencing of this is also important
     String message;
@@ -8,14 +8,14 @@ public class Chat {
     String sentTO;
     String time;
 
-    public Chat(String message, String sendBy, String sentTO, String time) {
+    public ChatModel(String message, String sendBy, String sentTO, String time) {
         this.message = message;
         this.sendBy = sendBy;
         this.sentTO = sentTO;
         this.time = time;
     }
 
-    public Chat() {
+    public ChatModel() {
     }
 
     public String getMessage() {

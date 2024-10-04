@@ -1,19 +1,14 @@
-package com.example.zombiechat.chat;
+package com.example.zombiechat.chat.data.models;
+
+import com.google.firebase.Timestamp;
 
 public class SingleChatModel {
     String message;
     String sentTo;
     String sendBy;
-    String time;
+    Timestamp time;
 
     public SingleChatModel() {
-    }
-
-    public SingleChatModel(String message, String sentTo, String sendBy, String time) {
-        this.message = message;
-        this.sentTo = sentTo;
-        this.sendBy = sendBy;
-        this.time = time;
     }
 
 
@@ -41,11 +36,11 @@ public class SingleChatModel {
         this.sendBy = sendBy;
     }
 
-    public String getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 }
