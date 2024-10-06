@@ -14,6 +14,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class ChatRoomViewModel extends ViewModel {
     private final ChatRepo repo;
+    private Disposable disposable;
 
     public ChatRoomViewModel(ChatRepo repo) {
         this.repo = repo;
@@ -33,7 +34,12 @@ public class ChatRoomViewModel extends ViewModel {
 
 
     public void fetchActiveChats(String chatRoomId) {
-        Disposable subscribe = repo.getActiveChats(chatRoomId).subscribe(activeChats::postValue);
+        disposable = repo.getActiveChats(chatRoomId).subscribe(activeChats::postValue);
+
+    }
+
+    public void dispose() {
+        disposable.dispose();
     }
 
 

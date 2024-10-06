@@ -144,6 +144,7 @@ public class ChatRoomScreen extends AppCompatActivity {
 
     }
 
+
     private void speak(String message) {
 
         float pitch = 1.1f;
@@ -160,6 +161,7 @@ public class ChatRoomScreen extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+        chatRoomViewModel.dispose();
 
     }
 
