@@ -77,6 +77,7 @@ public class FirebaseChatRepo implements ChatRepo {
 
                                         // Adding last chat model to list
                                         lastChatModels.add(lastChatModel);
+                                        lastChatModels.sort((o1, o2) -> o2.getMsgTime().compareTo(o1.getMsgTime()));
                                         emitter.onNext(lastChatModels);
                                     });
 
