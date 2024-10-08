@@ -1,0 +1,3 @@
+[] Revamp login with MVVM.
+[] Add check for every time user tries to log in, clear the cache.
+[] UI modifications for login screen
