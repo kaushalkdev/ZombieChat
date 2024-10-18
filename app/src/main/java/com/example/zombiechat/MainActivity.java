@@ -14,7 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.zombiechat.account.view.AccountSetting;
-import com.example.zombiechat.account.view.SigninActivity;
+import com.example.zombiechat.account.view.AuthScreen;
 import com.example.zombiechat.friends.view.allUsers.AllusersActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void sendToSignin() {
-        Intent SigninIntent = new Intent(MainActivity.this, SigninActivity.class);
+        Intent SigninIntent = new Intent(MainActivity.this, AuthScreen.class);
         startActivity(SigninIntent);
         finish();
     }

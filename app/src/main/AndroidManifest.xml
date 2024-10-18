@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".account.view.SigninActivity" />
+        <activity android:name=".account.view.AuthScreen" />
         <activity
             android:name=".account.view.AccountSetting"
             android:parentActivityName=".MainActivity" />
