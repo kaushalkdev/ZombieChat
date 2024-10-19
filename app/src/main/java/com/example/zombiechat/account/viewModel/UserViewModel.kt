@@ -25,7 +25,6 @@ class UserViewModel(private val repo: AccountRepo) : ViewModel() {
     }
 
     suspend fun updateImage(image: String) {
-
         runBlocking {
             launch {
 

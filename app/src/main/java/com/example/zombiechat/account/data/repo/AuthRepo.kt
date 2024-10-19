@@ -1,8 +1,11 @@
 package com.example.zombiechat.account.data.repo
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.auth.FirebaseAuth
+
 interface AuthRepo {
 
-    fun login(email: String, password: String): Boolean
+    fun signIn(): Boolean
 
     fun createNewUser(email: String, password: String): Boolean
 
@@ -14,7 +17,10 @@ interface AuthRepo {
 
 class AuthRepoImpl : AuthRepo {
 
-    override fun login(email: String, password: String): Boolean {
+    val firebaseAuth = FirebaseAuth.getInstance()
+
+
+    override fun signIn(): Boolean {
         return true
     }
 
