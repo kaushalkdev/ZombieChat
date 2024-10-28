@@ -3,6 +3,8 @@ package com.example.zombiechat.account.view;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.credentials.CreateCredentialRequest;
+import android.credentials.GetCredentialRequest;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.credentials.CredentialManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.zombiechat.MainActivity;
@@ -25,6 +28,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +68,15 @@ public class AuthScreen extends AppCompatActivity {
 
         // Build a GoogleSignInClient with the options specified by gso.
         // TODO : ADD GOOGLE'S CREDENTIAL MANAGER FOR GOOGLE SIGN IN
+        GetGoogleIdOption option = new GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(true)
+                .setServerClientId(getString(R.string.default_web_client_id))
+                .setAutoSelectEnabled(true)
+                .build();
+
+
+        // TODO figure out how to manage the flow lower android versions.
+
 
 
     }
