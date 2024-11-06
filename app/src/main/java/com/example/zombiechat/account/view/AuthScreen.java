@@ -48,6 +48,7 @@ public class AuthScreen extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressDialog mdialog;
     private AuthVM authVM;
+    private FirebaseAuth auth;
 
 
     @Override
@@ -56,6 +57,7 @@ public class AuthScreen extends AppCompatActivity {
         setContentView(R.layout.activity_signin);
 
         authVM = new AuthVM(new AuthRepoImpl());
+        auth = FirebaseAuth.getInstance();
 
 
         //progress Dialog
@@ -67,10 +69,7 @@ public class AuthScreen extends AppCompatActivity {
 
 
         // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
@@ -117,7 +116,20 @@ public class AuthScreen extends AppCompatActivity {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
+                String token = account.getIdToken();
+                AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
+
+
+                // Sign in with firebase auth and navigate to screen
+                auth.signInWithCredential(credential).addOnSuccessListener(authResult -> {
+
+                    Intent mainIntent = new Intent(AuthScreen.this, MainActivity.class);
+                    startActivity(mainIntent);
+                    finish();
+
+                });
                 authVM.createAccount();
+
 
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
