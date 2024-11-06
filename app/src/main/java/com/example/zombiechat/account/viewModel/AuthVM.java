@@ -25,7 +25,8 @@ public class AuthVM extends ViewModel {
     public void signOut() {
     }
 
-    public void createAccount() {
+    public void createAccount(UserModel user) {
+        repo.createNewUser(user);
     }
 
 

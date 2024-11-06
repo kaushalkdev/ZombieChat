@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.zombiechat.MainActivity;
 import com.example.zombiechat.R;
+import com.example.zombiechat.account.data.models.UserModel;
 import com.example.zombiechat.account.data.repo.AuthRepo;
 import com.example.zombiechat.account.data.repo.AuthRepoImpl;
 import com.example.zombiechat.account.viewModel.AuthVM;
@@ -39,6 +40,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class AuthScreen extends AppCompatActivity {
 
@@ -123,12 +125,26 @@ public class AuthScreen extends AppCompatActivity {
                 // Sign in with firebase auth and navigate to screen
                 auth.signInWithCredential(credential).addOnSuccessListener(authResult -> {
 
+                    // Adding new user to database
+                    if (Objects.requireNonNull(authResult.getAdditionalUserInfo()).isNewUser()) {
+                        FirebaseUser user = authResult.getUser();
+                        assert user != null;
+                        String image = Objects.requireNonNull(user.getPhotoUrl()).toString();
+                        String name = Objects.requireNonNull(user.getDisplayName());
+                        String userId = Objects.requireNonNull(user.getUid());
+                        String gender = "male";
+                        String status = "Hey there i am using Zombie chat";
+
+                        
+                        authVM.createAccount(new UserModel(image, name, gender, status, userId));
+                    }
+
+                    // Navigate to main screen
                     Intent mainIntent = new Intent(AuthScreen.this, MainActivity.class);
                     startActivity(mainIntent);
                     finish();
 
                 });
-                authVM.createAccount();
 
 
             } catch (ApiException e) {
