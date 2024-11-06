@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.credentials.CreateCredentialRequest;
-import android.credentials.GetCredentialRequest;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,10 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.credentials.CredentialManager;
+import androidx.credentials.GetCredentialRequest;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.zombiechat.MainActivity;
 import com.example.zombiechat.R;
+import com.example.zombiechat.account.data.repo.AuthRepo;
+import com.example.zombiechat.account.data.repo.AuthRepoImpl;
 import com.example.zombiechat.account.viewModel.AuthVM;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -53,7 +55,7 @@ public class AuthScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
 
-        authVM = new ViewModelProvider(this).get(AuthVM.class);
+        authVM = new AuthVM(new AuthRepoImpl());
 
 
         //progress Dialog
@@ -65,21 +67,32 @@ public class AuthScreen extends AppCompatActivity {
 
 
         // Configure Google Sign In
-
-        // Build a GoogleSignInClient with the options specified by gso.
-        // TODO : ADD GOOGLE'S CREDENTIAL MANAGER FOR GOOGLE SIGN IN
-        GetGoogleIdOption option = new GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(true)
-                .setServerClientId(getString(R.string.default_web_client_id))
-                .setAutoSelectEnabled(true)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
                 .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-
-        // TODO figure out how to manage the flow lower android versions.
-
+        msignin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (authVM.getCurrentUser() == null) {
+                    signIn();
+                } else {
+                    Toast.makeText(AuthScreen.this, "Already Signed in", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
     }
+
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
 
     @Override
     public void onStart() {
@@ -105,7 +118,7 @@ public class AuthScreen extends AppCompatActivity {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 authVM.createAccount();
-                 
+
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
