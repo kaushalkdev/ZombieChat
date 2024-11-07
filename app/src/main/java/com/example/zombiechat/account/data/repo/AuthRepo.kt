@@ -8,7 +8,8 @@ interface AuthRepo {
 
     fun signIn(): Boolean
 
-    fun createNewUser(user: UserModel): Boolean
+
+    suspend fun createNewUser(user: UserModel): Boolean
 
     fun logout(): Boolean
 
@@ -25,7 +26,7 @@ class AuthRepoImpl : AuthRepo {
         return true
     }
 
-    override fun createNewUser(user: UserModel): Boolean {
+    override suspend fun createNewUser(user: UserModel): Boolean {
         TODO("Not yet implemented")
     }
 

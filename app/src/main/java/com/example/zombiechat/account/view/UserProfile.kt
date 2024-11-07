@@ -42,6 +42,7 @@ class UserProfile : AppCompatActivity() {
         muserstatus = findViewById(R.id.user_status)
         musersex = findViewById(R.id.user_sex)
         msendRequestBtn = findViewById(R.id.send_request_btn)
+
         profileVM = ProfileVM(ProfileRepoImpl())
         profileVM!!.getUserModel().observe(this) {
             musername?.text = it.name
