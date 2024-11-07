@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import com.example.zombiechat.R
 import com.example.zombiechat.account.data.repo.AccountRepo
 import com.example.zombiechat.account.viewModel.UserViewModel
@@ -20,6 +21,7 @@ import com.squareup.picasso.Picasso
 
 
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
@@ -75,13 +77,9 @@ class AccountSetting : AppCompatActivity() {
                 .placeholder(R.drawable.default_user).into(muserimage)
 
 
-        };
-
-        runBlocking {
-            userViewModel.getUser()
         }
 
-
+        lifecycleScope.launch { userViewModel.getUser() }
 
 
 
@@ -170,7 +168,8 @@ class AccountSetting : AppCompatActivity() {
         mProgress!!.setMessage("Please wait while we upload the image.")
         mProgress!!.setCanceledOnTouchOutside(false)
 
-        runBlocking {
+
+        lifecycleScope.launch {
             try {
                 mProgress!!.show();
                 userViewModel.updateImage(resultUri.toString())
@@ -180,8 +179,8 @@ class AccountSetting : AppCompatActivity() {
                 Toast.makeText(this@AccountSetting, "Error uploading image", Toast.LENGTH_SHORT)
                     .show()
             }
-
         }
+
 
     }
 
