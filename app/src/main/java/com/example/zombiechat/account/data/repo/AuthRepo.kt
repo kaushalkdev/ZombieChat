@@ -1,41 +1,70 @@
 package com.example.zombiechat.account.data.repo
 
 import com.example.zombiechat.account.data.models.UserModel
+import com.example.zombiechat.constants.api.collections.Collections
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+import javax.inject.Singleton
 
 interface AuthRepo {
 
-    fun signIn(): Boolean
-
+    suspend fun signIn(authCredential: AuthCredential): Boolean
 
     suspend fun createNewUser(user: UserModel): Boolean
 
-    fun logout(): Boolean
+    fun logout()
 
     fun isLoggedIn(): Boolean
+
+    suspend fun getCurrentUser(): UserModel
 }
 
-
+@Singleton
 class AuthRepoImpl : AuthRepo {
 
-    val firebaseAuth = FirebaseAuth.getInstance()
+    private val firebaseAuth = FirebaseAuth.getInstance()
+    private val userCollection =
+        FirebaseFirestore.getInstance().collection(Collections.userCollection)
 
 
-    override fun signIn(): Boolean {
-        return true
+    override suspend fun signIn(authCredential: AuthCredential): Boolean {
+        try {
+            val authResult = firebaseAuth.signInWithCredential(authCredential).await()
+            return authResult.user != null;
+
+        } catch (e: Exception) {
+            return false
+        }
+
     }
 
     override suspend fun createNewUser(user: UserModel): Boolean {
-        TODO("Not yet implemented")
+        try {
+            userCollection.document(user.userid!!).set(user).await()
+            return true
+
+        } catch (e: Exception) {
+            return false
+
+        }
+
     }
 
 
-    override fun logout(): Boolean {
-        return true
+    override fun logout() {
+        firebaseAuth.signOut()
     }
 
     override fun isLoggedIn(): Boolean {
-        return true
+        return firebaseAuth.currentUser != null
+    }
+
+    override suspend fun getCurrentUser(): UserModel {
+
+        val userModel =
+       firebaseAuth.currentUser
     }
 }

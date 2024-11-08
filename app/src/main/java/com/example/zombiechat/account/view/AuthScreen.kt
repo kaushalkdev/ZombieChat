@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.zombiechat.MainActivity
 import com.example.zombiechat.R
 import com.example.zombiechat.account.data.models.UserModel
@@ -20,6 +21,7 @@ import com.google.firebase.auth.AdditionalUserInfo
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.launch
 import java.util.Objects
 
 class AuthScreen : AppCompatActivity() {
@@ -93,6 +95,10 @@ class AuthScreen : AppCompatActivity() {
                 )
                 val token = account.idToken
                 val credential = GoogleAuthProvider.getCredential(token, null)
+
+                lifecycleScope.launch {
+                    authVM?.signIn(credential)
+                }
 
 
                 // Sign in with firebase auth and navigate to screen
