@@ -19,7 +19,7 @@ interface AuthRepo {
 
     fun isLoggedIn(): Boolean
 
-    suspend fun getCurrentUser(): UserModel
+    suspend fun getCurrentUser(): UserModel?
 }
 
 @Singleton
@@ -62,9 +62,9 @@ class AuthRepoImpl : AuthRepo {
         return firebaseAuth.currentUser != null
     }
 
-    override suspend fun getCurrentUser(): UserModel {
-
-        val userModel =
-       firebaseAuth.currentUser
+    override suspend fun getCurrentUser(): UserModel? {
+        val currentUser = firebaseAuth.currentUser
+        val userSnapshot = currentUser?.let { userCollection.document(it.uid).get().await() }
+        return userSnapshot?.toObject(UserModel::class.java)
     }
 }
