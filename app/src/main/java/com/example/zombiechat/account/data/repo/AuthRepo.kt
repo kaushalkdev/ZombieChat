@@ -33,7 +33,18 @@ class AuthRepoImpl : AuthRepo {
     override suspend fun signIn(authCredential: AuthCredential): Boolean {
         try {
             val authResult = firebaseAuth.signInWithCredential(authCredential).await()
-            return authResult.user != null;
+            if (authResult.user == null) return false
+            if (!authResult.additionalUserInfo!!.isNewUser) return true
+            else {
+                val image = authResult.user?.photoUrl
+                val name = authResult.user?.displayName
+                val gender = "male"
+                val status = "Hey there i am using Zombie chat"
+                val userid = authResult.user?.uid
+                val user = UserModel(image.toString(), name.toString(), gender, status, userid)
+                return createNewUser(user)
+
+            }
 
         } catch (e: Exception) {
             return false
@@ -48,7 +59,6 @@ class AuthRepoImpl : AuthRepo {
 
         } catch (e: Exception) {
             return false
-
         }
 
     }

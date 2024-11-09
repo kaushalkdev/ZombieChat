@@ -23,9 +23,10 @@ class AuthVM(val repo: AuthRepo) : ViewModel() {
         repo.logout()
     }
 
-    suspend fun createAccount(user: UserModel) {
-        viewModelScope.launch {
-            repo.createNewUser(user)
-        }
+
+    fun isLoggedIn(): Boolean {
+        return repo.isLoggedIn()
     }
+
+
 }
