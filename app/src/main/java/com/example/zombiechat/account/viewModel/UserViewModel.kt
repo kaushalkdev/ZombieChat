@@ -4,10 +4,10 @@ package com.example.zombiechat.account.viewModel
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.zombiechat.account.data.models.UserModel
 import com.example.zombiechat.account.data.repo.AccountRepo
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 
 class UserViewModel(private val repo: AccountRepo) : ViewModel() {
@@ -17,58 +17,57 @@ class UserViewModel(private val repo: AccountRepo) : ViewModel() {
 
     fun updateName(name: String) {
         val user = userLiveData.value?.apply { this.name = name }
-        runBlocking {
+
+        viewModelScope.launch {
             repo.updateUser(user!!)
+            userLiveData.postValue(user)
         }
 
-        userLiveData.postValue(user)
+
     }
 
     suspend fun updateImage(image: String) {
 
-        runBlocking {
-            launch {
-
-
-                val uploadedUrl = repo.uploadUserImage(Uri.parse(image))
-                val user = userLiveData.value?.apply { this.image = uploadedUrl }
-                repo.updateUser(user!!)
-                userLiveData.postValue(user)
-            }
+        viewModelScope.launch {
+            val uploadedUrl = repo.uploadUserImage(Uri.parse(image))
+            val user = userLiveData.value?.apply { this.image = uploadedUrl }
+            repo.updateUser(user!!)
+            userLiveData.postValue(user)
         }
+
 
     }
 
     fun updateGender(gender: String) {
         val user = userLiveData.value?.apply { this.gender = gender }
-        runBlocking {
+        viewModelScope.launch {
             repo.updateUser(user!!)
+            userLiveData.postValue(user)
         }
-        userLiveData.postValue(user)
+
     }
 
     fun updateStatus(status: String) {
         val user = userLiveData.value?.apply { this.status = status }
-        runBlocking {
+        viewModelScope.launch {
             repo.updateUser(user!!)
+            userLiveData.postValue(user)
         }
-        userLiveData.postValue(user)
+
+
     }
 
 
     suspend fun getUser() {
-        runBlocking {
-            launch {
+        viewModelScope.launch {
+            try {
+                val user = repo.getCurrentUser() ?: throw Exception("Error getting user")
 
-                try {
-                    val user = repo.getCurrentUser() ?: throw Exception("Error getting user")
-
-                    userLiveData.value = user
-                } catch (e: Exception) {
-                    throw Exception("Error getting user ${e.message}")
-                }
-
+                userLiveData.value = user
+            } catch (e: Exception) {
+                throw Exception("Error getting user ${e.message}")
             }
+
         }
 
 

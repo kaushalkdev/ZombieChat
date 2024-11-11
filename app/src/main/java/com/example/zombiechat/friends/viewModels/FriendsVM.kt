@@ -3,6 +3,7 @@ package com.example.zombiechat.friends.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.zombiechat.account.data.models.UserModel
 import com.example.zombiechat.friends.data.models.NewFriendsModel
 import com.example.zombiechat.friends.data.repo.FriendsRepo
@@ -19,8 +20,6 @@ class FriendsVM(private val repo: FriendsRepo) : ViewModel() {
     private val liveRequests: MutableLiveData<List<UserModel>> = MutableLiveData()
 
 
-
-
     fun getAllFriends(): MutableLiveData<List<NewFriendsModel>> {
         return liveFriends
     }
@@ -31,33 +30,29 @@ class FriendsVM(private val repo: FriendsRepo) : ViewModel() {
 
 
     suspend fun fetchAllFriends() {
-        runBlocking {
+        viewModelScope.launch {
             val friends = repo.getAllFriends()
             liveFriends.postValue(friends)
         }
+
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+
     fun fetchAllRequests() {
-
-        // TODO read more about this global scope.
-
-        GlobalScope.launch {
+        viewModelScope.launch {
             val requests = repo.getAllRequests()
             liveRequests.postValue(requests)
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun acceptRequest(userId: String) {
-        GlobalScope.launch {
-            repo.acceptRequest(userId)
-        }
+        viewModelScope.launch { repo.acceptRequest(userId) }
+
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+
     fun rejectRequest(userId: String) {
-        GlobalScope.launch {
+        viewModelScope.launch {
             repo.rejectRequest(userId)
         }
     }

@@ -4,7 +4,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdk 34
+    compileSdk 35
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -35,6 +35,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:25.1.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.google.firebase:firebase-storage:21.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-core:2.6.2'
     testImplementation 'junit:junit:4.13.2'
 
 
@@ -62,7 +63,14 @@ dependencies {
     // Check for v11.4.2 or higher
     implementation 'com.google.firebase:firebase-core:21.1.1'
 
-    // Add dependency
+    // credential manager for google signin
+    implementation "androidx.credentials:credentials:1.5.0-alpha06"
+    implementation "androidx.credentials:credentials-play-services-auth:1.5.0-alpha06"
+    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.1"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
 
 
 }
