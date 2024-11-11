@@ -1,5 +1,6 @@
 package com.example.zombiechat.account.viewModel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.zombiechat.account.data.models.UserModel
@@ -9,18 +10,18 @@ import kotlinx.coroutines.launch
 
 class AuthVM(val repo: AuthRepo) : ViewModel() {
 
-
-    var currentUser: UserModel? = null
+    var currentUser: MutableLiveData<UserModel?> = MutableLiveData()
 
     suspend fun signInWith(authCredential: AuthCredential) {
         viewModelScope.launch {
             repo.signIn(authCredential)
-            currentUser = repo.getCurrentUser()
+            currentUser.postValue(repo.getCurrentUser())
         }
     }
 
     fun logOut() {
         repo.logout()
+        currentUser.postValue(null)
     }
 
 

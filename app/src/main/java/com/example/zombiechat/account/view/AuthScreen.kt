@@ -22,6 +22,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.Objects
 
 class AuthScreen : AppCompatActivity() {
@@ -55,7 +56,8 @@ class AuthScreen : AppCompatActivity() {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
         msignin?.setOnClickListener(View.OnClickListener {
-            if (authVM?.currentUser == null) {
+            if (authVM?.currentUser?.value == null) {
+
                 val signInIntent = mGoogleSignInClient!!.signInIntent
                 startActivityForResult(signInIntent, RC_SIGN_IN)
             } else {
@@ -68,6 +70,14 @@ class AuthScreen : AppCompatActivity() {
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
+
+        authVM?.currentUser?.observe(this) {
+            if (it != null) {
+                val mainIntent = Intent(this@AuthScreen, MainActivity::class.java)
+                startActivity(mainIntent)
+                finish()
+            }
+        }
         if (authVM?.isLoggedIn() == true) {
             val mainIntent = Intent(this@AuthScreen, MainActivity::class.java)
             startActivity(mainIntent)
@@ -91,13 +101,9 @@ class AuthScreen : AppCompatActivity() {
                 val credential = GoogleAuthProvider.getCredential(token, null)
 
                 lifecycleScope.launch {
-
                     try {
                         authVM?.signInWith(credential)
-                        // Navigate to main screen
-                        val mainIntent = Intent(this@AuthScreen, MainActivity::class.java)
-                        startActivity(mainIntent)
-                        finish()
+
                     } catch (e: Exception) {
 
                         Toast.makeText(this@AuthScreen, "Error: " + e.message, Toast.LENGTH_SHORT)
