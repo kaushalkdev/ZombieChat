@@ -30,7 +30,6 @@ class AuthScreen : AppCompatActivity() {
     private var mGoogleSignInClient: GoogleSignInClient? = null
     private var mdialog: ProgressDialog? = null
     private var authVM: AuthVM? = null
-    private var auth: FirebaseAuth? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +37,6 @@ class AuthScreen : AppCompatActivity() {
         setContentView(R.layout.activity_signin)
 
         authVM = AuthVM(AuthRepoImpl())
-        auth = FirebaseAuth.getInstance()
 
 
         //progress Dialog
