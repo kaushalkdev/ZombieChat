@@ -4,37 +4,27 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.example.zombiechat.account.view.AccountSetting
 import com.example.zombiechat.account.view.AuthScreen
 import com.example.zombiechat.friends.view.allUsers.AllusersActivity
 import com.example.zombiechat.service.AuthService
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.tabs.TabLayout
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent.inject
 
-class MainActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
     private var mSectionPagerAdapter: SectionPageradapter? = null
     private var mToolbar: Toolbar? = null
     private var viewPager: ViewPager? = null
     private var tablayout: TabLayout? = null
-    private val mGoogleSignInClient: GoogleSignInClient? = null
-
     private val authService: AuthService by inject(AuthService::class.java)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_home)
 
         //setting tabs
         mToolbar = findViewById(R.id.main_page_toolbar)
@@ -51,31 +41,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-
-
-        startKoin {
-            androidLogger()
-            androidContext(this@MainActivity)
-            modules(appModule)
-        }
-
-
-        if (authService.getCurrentUser() == null) {
-            sendToSigning();
-        }
-
-
-    }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
-
         menuInflater.inflate(R.menu.main_menu, menu)
-
-
         return true
     }
 
@@ -102,31 +71,25 @@ class MainActivity : AppCompatActivity() {
 
 
     //All Used methods
-    fun sendToSigning() {
-        val SigninIntent = Intent(this@MainActivity, AuthScreen::class.java)
+    private fun sendToSigning() {
+        val SigninIntent = Intent(this@HomeActivity, AuthScreen::class.java)
         startActivity(SigninIntent)
         finish()
     }
 
-
     private fun accountSettingsIntent() {
-        val AccountSettingIntent = Intent(this@MainActivity, AccountSetting::class.java)
+        val AccountSettingIntent = Intent(this@HomeActivity, AccountSetting::class.java)
         startActivity(AccountSettingIntent)
     }
 
 
     private fun allUserIntent() {
-        val AllusersActivityIntent = Intent(this@MainActivity, AllusersActivity::class.java)
+        val AllusersActivityIntent = Intent(this@HomeActivity, AllusersActivity::class.java)
         startActivity(AllusersActivityIntent)
     }
 
-    companion object {
-        private const val TAG = "Cloud Firestore"
-    }
-}
-
-
-val appModule = module {
-    singleOf(::AuthService)
 
 }
+
+
+
