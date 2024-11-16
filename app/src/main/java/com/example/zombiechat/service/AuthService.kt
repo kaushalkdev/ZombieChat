@@ -1,15 +1,27 @@
 package com.example.zombiechat.service
 
 import com.example.zombiechat.account.data.models.UserModel
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 
-object AuthService {
+class AuthService {
 
     val firebaseAuth = FirebaseAuth.getInstance()
-    suspend fun signIn() {}
-    suspend fun signOut() {}
-    suspend fun getCurrentUser(): UserModel? {
-        firebaseAuth.currentUser
+
+
+    suspend fun signInWith(authCredential: AuthCredential): Task<AuthResult> {
+        return firebaseAuth.signInWithCredential(authCredential)
+    }
+
+    suspend fun signOut() {
+        firebaseAuth.signOut()
+    }
+
+    suspend fun getCurrentUser(): FirebaseUser? {
+        return firebaseAuth.currentUser
     }
 }

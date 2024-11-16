@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.example.zombiechat.account.view.AccountSetting
 import com.example.zombiechat.account.view.AuthScreen
@@ -15,7 +16,15 @@ import com.example.zombiechat.service.AuthService
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.tabs.TabLayout
+
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
+import org.koin.java.KoinJavaComponent.inject
 
 class MainActivity : AppCompatActivity() {
     private var mSectionPagerAdapter: SectionPageradapter? = null
@@ -24,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private var tablayout: TabLayout? = null
     private val mGoogleSignInClient: GoogleSignInClient? = null
 
+    private val authService: AuthService by inject(AuthService::class.java)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,14 +52,26 @@ class MainActivity : AppCompatActivity() {
         viewPager?.setAdapter(mSectionPagerAdapter)
         tablayout?.setupWithViewPager(viewPager)
 
+
     }
 
     override fun onStart() {
         super.onStart()
 
-                if (AuthService.getCurrentUser() == null) {
-            sendToSigning();
+
+        startKoin {
+            androidLogger()
+            androidContext(this@MainActivity)
+            modules(appModule)
         }
+
+        lifecycleScope.launch {
+            if (authService.getCurrentUser() == null) {
+                sendToSigning();
+            }
+        }
+
+
     }
 
 
@@ -71,18 +93,13 @@ class MainActivity : AppCompatActivity() {
 
             mGoogleSignInClient!!.signOut().addOnCompleteListener {
                 Toast.makeText(
-                    this@MainActivity,
-                    " Logged Out",
-                    Toast.LENGTH_SHORT
+                    this@MainActivity, " Logged Out", Toast.LENGTH_SHORT
+                ).show()
+            }.addOnFailureListener { e ->
+                Toast.makeText(
+                    this@MainActivity, "Error: " + e.message, Toast.LENGTH_SHORT
                 ).show()
             }
-                .addOnFailureListener { e ->
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Error: " + e.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
 
             sendToSigning()
         }
@@ -122,4 +139,10 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "Cloud Firestore"
     }
+}
+
+
+val appModule = module {
+    singleOf(::AuthService)
+
 }
