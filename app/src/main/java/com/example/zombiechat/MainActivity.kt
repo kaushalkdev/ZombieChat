@@ -13,12 +13,8 @@ import com.example.zombiechat.account.view.AccountSetting
 import com.example.zombiechat.account.view.AuthScreen
 import com.example.zombiechat.friends.view.allUsers.AllusersActivity
 import com.example.zombiechat.service.AuthService
-import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.tabs.TabLayout
-
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -65,10 +61,9 @@ class MainActivity : AppCompatActivity() {
             modules(appModule)
         }
 
-        lifecycleScope.launch {
-            if (authService.getCurrentUser() == null) {
-                sendToSigning();
-            }
+
+        if (authService.getCurrentUser() == null) {
+            sendToSigning();
         }
 
 
@@ -89,18 +84,7 @@ class MainActivity : AppCompatActivity() {
 
 
         if (item.itemId == R.id.main_logout_btn) {
-            //            mAuth.signOut();
-
-            mGoogleSignInClient!!.signOut().addOnCompleteListener {
-                Toast.makeText(
-                    this@MainActivity, " Logged Out", Toast.LENGTH_SHORT
-                ).show()
-            }.addOnFailureListener { e ->
-                Toast.makeText(
-                    this@MainActivity, "Error: " + e.message, Toast.LENGTH_SHORT
-                ).show()
-            }
-
+            authService.signOut()
             sendToSigning()
         }
 

@@ -17,11 +17,11 @@ class AuthService {
         return firebaseAuth.signInWithCredential(authCredential)
     }
 
-    suspend fun signOut() {
+    fun signOut() {
         firebaseAuth.signOut()
     }
 
-    suspend fun getCurrentUser(): FirebaseUser? {
+    fun getCurrentUser(): FirebaseUser? {
         return firebaseAuth.currentUser
     }
 }

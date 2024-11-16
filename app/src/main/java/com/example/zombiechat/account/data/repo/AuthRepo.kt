@@ -2,11 +2,13 @@ package com.example.zombiechat.account.data.repo
 
 import com.example.zombiechat.account.data.models.UserModel
 import com.example.zombiechat.constants.api.collections.Collections
+import com.example.zombiechat.service.AuthService
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import org.koin.java.KoinJavaComponent.inject
 import javax.inject.Singleton
 
 interface AuthRepo {
@@ -15,8 +17,6 @@ interface AuthRepo {
 
     suspend fun createNewUser(user: UserModel): Boolean
 
-    fun logout()
-
     fun isLoggedIn(): Boolean
 
     suspend fun getCurrentUser(): UserModel?
@@ -24,15 +24,15 @@ interface AuthRepo {
 
 @Singleton
 class AuthRepoImpl : AuthRepo {
+    private val authService: AuthService by inject(AuthService::class.java)
 
-    private val firebaseAuth = FirebaseAuth.getInstance()
     private val userCollection =
         FirebaseFirestore.getInstance().collection(Collections.userCollection)
 
 
     override suspend fun signIn(authCredential: AuthCredential): Boolean {
         try {
-            val authResult = firebaseAuth.signInWithCredential(authCredential).await()
+            val authResult = authService.signInWith(authCredential).await()
             if (authResult.user == null) return false
             if (!authResult.additionalUserInfo!!.isNewUser) return true
             else {
@@ -64,16 +64,12 @@ class AuthRepoImpl : AuthRepo {
     }
 
 
-    override fun logout() {
-        firebaseAuth.signOut()
-    }
-
     override fun isLoggedIn(): Boolean {
-        return firebaseAuth.currentUser != null
+        return authService.getCurrentUser() != null
     }
 
     override suspend fun getCurrentUser(): UserModel? {
-        val currentUser = firebaseAuth.currentUser
+        val currentUser = authService.getCurrentUser()
         val userSnapshot = currentUser?.let { userCollection.document(it.uid).get().await() }
         return userSnapshot?.toObject(UserModel::class.java)
     }
