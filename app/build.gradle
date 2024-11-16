@@ -58,18 +58,20 @@ dependencies {
     //picasso library
     implementation 'com.squareup.picasso:picasso:2.5.2'
 
-    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
-
     //for firebase crashlytics
     implementation 'com.google.firebase:firebase-crashlytics'
-
-    implementation("com.google.firebase:firebase-analytics")
     // Check for v11.4.2 or higher
     implementation 'com.google.firebase:firebase-core:21.1.1'
+
+    // credential manager for google signin
+    implementation "androidx.credentials:credentials:1.5.0-alpha06"
+    implementation "androidx.credentials:credentials-play-services-auth:1.5.0-alpha06"
+    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.1"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
+
     implementation("io.insert-koin:koin-android:3.5.0")
 
 
