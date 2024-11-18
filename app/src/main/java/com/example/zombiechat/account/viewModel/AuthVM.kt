@@ -19,10 +19,6 @@ class AuthVM(val repo: AuthRepo) : ViewModel() {
         }
     }
 
-    fun logOut() {
-        repo.logout()
-        currentUser.postValue(null)
-    }
 
 
     fun isLoggedIn(): Boolean {

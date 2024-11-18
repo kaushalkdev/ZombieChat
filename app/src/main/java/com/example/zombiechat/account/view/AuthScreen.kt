@@ -7,9 +7,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.zombiechat.MainActivity
+import com.example.zombiechat.HomeActivity
 import com.example.zombiechat.R
-import com.example.zombiechat.account.data.models.UserModel
 import com.example.zombiechat.account.data.repo.AuthRepoImpl
 import com.example.zombiechat.account.viewModel.AuthVM
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -17,20 +16,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.AdditionalUserInfo
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.util.Objects
 
 class AuthScreen : AppCompatActivity() {
     private var msignin: SignInButton? = null
     private var mGoogleSignInClient: GoogleSignInClient? = null
     private var mdialog: ProgressDialog? = null
     private var authVM: AuthVM? = null
-    private var auth: FirebaseAuth? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +31,6 @@ class AuthScreen : AppCompatActivity() {
         setContentView(R.layout.activity_signin)
 
         authVM = AuthVM(AuthRepoImpl())
-        auth = FirebaseAuth.getInstance()
 
 
         //progress Dialog
@@ -58,8 +50,12 @@ class AuthScreen : AppCompatActivity() {
         msignin?.setOnClickListener(View.OnClickListener {
             if (authVM?.currentUser?.value == null) {
 
-                val signInIntent = mGoogleSignInClient!!.signInIntent
-                startActivityForResult(signInIntent, RC_SIGN_IN)
+                mGoogleSignInClient!!.signOut().addOnSuccessListener {
+                    val signInIntent = mGoogleSignInClient!!.signInIntent
+                    startActivityForResult(signInIntent, RC_SIGN_IN)
+                }
+
+
             } else {
                 Toast.makeText(this@AuthScreen, "Already Signed in", Toast.LENGTH_SHORT).show()
             }
@@ -73,13 +69,13 @@ class AuthScreen : AppCompatActivity() {
 
         authVM?.currentUser?.observe(this) {
             if (it != null) {
-                val mainIntent = Intent(this@AuthScreen, MainActivity::class.java)
+                val mainIntent = Intent(this@AuthScreen, HomeActivity::class.java)
                 startActivity(mainIntent)
                 finish()
             }
         }
         if (authVM?.isLoggedIn() == true) {
-            val mainIntent = Intent(this@AuthScreen, MainActivity::class.java)
+            val mainIntent = Intent(this@AuthScreen, HomeActivity::class.java)
             startActivity(mainIntent)
             finish()
         }

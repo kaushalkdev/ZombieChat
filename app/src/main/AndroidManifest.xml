@@ -13,30 +13,31 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".chat.views.screens.activities.ChatRoomScreen"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".account.view.UserProfile"
             android:parentActivityName=".friends.view.allUsers.AllusersActivity" />
         <activity
             android:name=".friends.view.allUsers.AllusersActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".HomeActivity" />
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:name=".HomeActivity"
+            android:exported="false">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".account.view.AuthScreen" />
         <activity
             android:name=".account.view.AccountSetting"
-            android:parentActivityName=".MainActivity" />
-        <!--        <activity-->
-        <!--            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"-->
-        <!--            android:theme="@style/Base.Theme.AppCompat" />-->
+            android:parentActivityName=".HomeActivity" />
     </application>
 
 </manifest>
