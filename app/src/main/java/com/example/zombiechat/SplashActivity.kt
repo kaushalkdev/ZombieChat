@@ -18,7 +18,7 @@ import org.koin.java.KoinJavaComponent.inject
 class SplashActivity : AppCompatActivity() {
 
 
-    final private val authService: AuthService by inject(AuthService::class.java)
+    private val authService: AuthService by inject(AuthService::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -33,16 +33,12 @@ class SplashActivity : AppCompatActivity() {
 
         if (authService.getCurrentUser() == null) {
             sendToSigning()
-        }else{
+        } else {
             val mainIntent = Intent(this@SplashActivity, HomeActivity::class.java)
             startActivity(mainIntent)
             finish()
         }
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
     }
 
 
