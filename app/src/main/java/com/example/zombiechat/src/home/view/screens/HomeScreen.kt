@@ -36,13 +36,9 @@ class HomeActivity : AppCompatActivity() {
         tablayout = findViewById(R.id.main_tabs)
         viewPager = findViewById(R.id.main_view_pager)
 
-        mSectionPagerAdapter =
-            HomePagerAdapter(
-                supportFragmentManager
-            )
+        mSectionPagerAdapter = HomePagerAdapter(supportFragmentManager)
         viewPager?.setAdapter(mSectionPagerAdapter)
         tablayout?.setupWithViewPager(viewPager)
-
 
     }
 
@@ -56,21 +52,20 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         super.onOptionsItemSelected(item)
 
+        when (item.itemId) {
+            R.id.main_logout_btn -> {
+                authService.signOut()
+                sendToSigning()
+            }
 
-        if (item.itemId == R.id.main_logout_btn) {
-            authService.signOut()
-            sendToSigning()
+            R.id.main_account_setting -> {
+                accountSettingsIntent()
+            }
+
+            R.id.all_users -> {
+                allUserIntent()
+            }
         }
-
-        if (item.itemId == R.id.main_account_setting) {
-            accountSettingsIntent()
-        }
-
-        if (item.itemId == R.id.all_users) {
-            allUserIntent()
-        }
-
-
         return true
     }
 
