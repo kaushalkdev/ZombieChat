@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,23 +21,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".chat.views.screens.activities.ChatRoomScreen"
-            android:parentActivityName=".HomeActivity" />
+            android:name=".src.chat.views.screens.activities.ChatRoomScreen"
+            android:parentActivityName=".src.home.view.screens.HomeActivity" />
         <activity
             android:name=".account.view.UserProfile"
             android:parentActivityName=".friends.view.allUsers.AllusersActivity" />
         <activity
             android:name=".friends.view.allUsers.AllusersActivity"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName=".src.home.view.screens.HomeActivity" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".src.home.view.screens.HomeActivity"
             android:exported="false">
 
         </activity>
         <activity android:name=".account.view.AuthScreen" />
         <activity
             android:name=".account.view.AccountSetting"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName=".src.home.view.screens.HomeActivity" />
     </application>
 
 </manifest>
