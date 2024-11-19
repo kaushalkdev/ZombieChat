@@ -12,7 +12,7 @@ class AuthService {
     val firebaseAuth = FirebaseAuth.getInstance()
 
 
-    suspend fun signInWith(authCredential: AuthCredential): Task<AuthResult> {
+    fun signInWith(authCredential: AuthCredential): Task<AuthResult> {
         return firebaseAuth.signInWithCredential(authCredential)
     }
 
