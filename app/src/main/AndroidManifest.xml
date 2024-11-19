@@ -24,7 +24,7 @@
             android:name=".src.chat.views.screens.activities.ChatRoomScreen"
             android:parentActivityName=".src.home.view.screens.HomeActivity" />
         <activity
-            android:name=".account.view.UserProfile"
+            android:name=".src.account.view.UserProfile"
             android:parentActivityName=".friends.view.allUsers.AllusersActivity" />
         <activity
             android:name=".friends.view.allUsers.AllusersActivity"
@@ -34,9 +34,9 @@
             android:exported="false">
 
         </activity>
-        <activity android:name=".account.view.AuthScreen" />
+        <activity android:name=".src.account.view.AuthScreen" />
         <activity
-            android:name=".account.view.AccountSetting"
+            android:name=".src.account.view.AccountSetting"
             android:parentActivityName=".src.home.view.screens.HomeActivity" />
     </application>
 
