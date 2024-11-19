@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.example.zombiechat.account.view.AuthScreen
+import com.example.zombiechat.src.account.view.AuthScreen
 import com.example.zombiechat.src.home.view.screens.HomeActivity
 import com.example.zombiechat.util.service.AuthService
 import org.koin.android.ext.koin.androidContext

@@ -1,4 +1,4 @@
-package com.example.zombiechat.account.view
+package com.example.zombiechat.src.account.view
 
 import android.os.Bundle
 import android.widget.Button

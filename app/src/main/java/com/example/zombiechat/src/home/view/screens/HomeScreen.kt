@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
 import com.example.zombiechat.R
-import com.example.zombiechat.account.view.AccountSetting
-import com.example.zombiechat.account.view.AuthScreen
+import com.example.zombiechat.src.account.view.AccountSetting
+import com.example.zombiechat.src.account.view.AuthScreen
 import com.example.zombiechat.friends.view.allUsers.AllusersActivity
 import com.example.zombiechat.src.home.view.adapters.HomePagerAdapter
 import com.example.zombiechat.util.service.AuthService

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zombiechat.R;
 import com.example.zombiechat.src.account.data.models.UserModel;
-import com.example.zombiechat.account.view.UserProfile;
+import com.example.zombiechat.src.account.view.UserProfile;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
