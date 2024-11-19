@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.zombiechat.src.account.view.AuthScreen
 import com.example.zombiechat.src.home.view.screens.HomeActivity
 import com.example.zombiechat.util.service.AuthService
+import com.example.zombiechat.util.service.InjectorService
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -23,11 +24,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        startKoin {
-            androidLogger()
-            androidContext(this@MainActivity)
-            modules(appModule)
-        }
+        InjectorService.startInjector(this)
 
 
         if (authService.getCurrentUser() == null) {
@@ -49,7 +46,3 @@ class MainActivity : AppCompatActivity() {
 }
 
 
-val appModule = module {
-    singleOf(::AuthService)
-
-}
