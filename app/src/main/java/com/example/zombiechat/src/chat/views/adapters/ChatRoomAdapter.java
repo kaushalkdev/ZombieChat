@@ -33,7 +33,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.UsersC
         SingleChatModel model = chatList.get(position);
         String currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         // Adding this check as we want to differentiate messages sent by the current user and the other user
-        return model.getSendBy().equals(currentUserId) ? UserTypes.currentUser : UserTypes.otherUser;
+        return model.sendBy.equals(currentUserId) ? UserTypes.currentUser : UserTypes.otherUser;
 
     }
 
@@ -69,9 +69,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.UsersC
         // set the messages for the current user and the other user by checking the item view type
         int userType = holder.getItemViewType();
         if (userType == UserTypes.currentUser) {
-            holder.setCurrentMessage(model.getMessage(), model.getTime());
+            holder.setCurrentMessage(model.message, model.time);
         } else {
-            holder.setOtherMessage(model.getMessage(), model.getTime());
+            holder.setOtherMessage(model.message, model.time);
         }
 
 

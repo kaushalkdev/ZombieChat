@@ -44,15 +44,15 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.Last
     public void onBindViewHolder(@NonNull final LastChatHolder holder, int i) {
 
         LastChatModel chatBox = chatBoxes.get(i);
-        holder.userLastMsg.setText(chatBox.getMsg());
-        holder.userName.setText(chatBox.getUserName());
-        holder.setUserImage(chatBox.getUserImage());
-        holder.msgDateTime.setText(chatBox.getMsgTime().toDate().toString());
+        holder.userLastMsg.setText(chatBox.msg);
+        holder.userName.setText(chatBox.userName);
+        holder.setUserImage(chatBox.userImage);
+        holder.msgDateTime.setText(chatBox.msgTime.toDate().toString());
         holder.itemView.setOnClickListener(v -> {
             Intent chatRoomIntent = new Intent(activity, ChatRoomScreen.class);
-            chatRoomIntent.putExtra(Fields.otherUserName, chatBox.getUserName());
-            chatRoomIntent.putExtra(Fields.otherUserImage, chatBox.getUserImage());
-            chatRoomIntent.putExtra(Fields.chatRoomId, chatBox.getChatId());
+            chatRoomIntent.putExtra(Fields.otherUserName, chatBox.userName);
+            chatRoomIntent.putExtra(Fields.otherUserImage, chatBox.userImage);
+            chatRoomIntent.putExtra(Fields.chatRoomId, chatBox.chatId);
             activity.startActivity(chatRoomIntent);
         });
 

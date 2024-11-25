@@ -30,7 +30,7 @@ public class ChatListViewModel extends ViewModel {
     public void fetchLastChats() throws ExecutionException, InterruptedException {
         try {
             // TODO dispose the subscriber when viewmodel is destroyed
-            Disposable subscribe = repo.getLastChats().observeOn(Schedulers.io()).subscribe(lastChats::postValue);
+            Disposable subscribe = repo.lastChats.observeOn(Schedulers.io()).subscribe(lastChats::postValue);
 
         } catch (Exception e) {
             Log.d("ChatRepo", "fetchLastChats: " + e);
