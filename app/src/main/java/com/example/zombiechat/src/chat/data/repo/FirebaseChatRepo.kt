@@ -7,7 +7,9 @@ import com.example.zombiechat.src.chat.data.models.LastChatModel
 import com.example.zombiechat.src.chat.data.models.SingleChatModel
 import com.example.zombiechat.util.consts.DbCollection
 import com.example.zombiechat.util.consts.Fields
+import com.example.zombiechat.util.service.ChatException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,8 +33,7 @@ class FirebaseChatRepo : ChatRepo {
         FirebaseFirestore.getInstance().collection(DbCollection.userCollection)
 
     @get:Throws(
-        ExecutionException::class,
-        InterruptedException::class
+        ExecutionException::class, InterruptedException::class
     )
     override val lastChats: Observable<List<LastChatModel>?>
         get() {
@@ -62,8 +63,8 @@ class FirebaseChatRepo : ChatRepo {
                         val chatsTaskForAChatRoom =
                             chatCollections.document(chatRoomModel.chatRoomId)
                                 .collection(DbCollection.chatCollection).orderBy(
-                                Fields.timestamp, Query.Direction.DESCENDING
-                            ).limit(1).get()
+                                    Fields.timestamp, Query.Direction.DESCENDING
+                                ).limit(1).get()
 
                         // Attaching a success listener
                         chatsTaskForAChatRoom
@@ -136,12 +137,19 @@ class FirebaseChatRepo : ChatRepo {
 
 
     override fun sendMessage(message: String?, sendTo: String?, chatRoomId: String?) {
-        val singleChatModel = SingleChatModel()
-        singleChatModel.message = message
-        singleChatModel.sendBy = currentUser
-        singleChatModel.sentTo = sendTo
-        singleChatModel.time = now.now()
-        chatCollections.document(chatRoomId!!).collection(DbCollection.chatCollection)
-            .add(singleChatModel)
+
+        try {
+            val singleChatModel = SingleChatModel()
+            singleChatModel.message = message
+            singleChatModel.sendBy = currentUser
+            singleChatModel.sentTo = sendTo
+            singleChatModel.time = now.now()
+            chatCollections.document(chatRoomId!!).collection(DbCollection.chatCollection)
+                .add(singleChatModel)
+        } catch (e: Exception) {
+            throw  ChatException("Error in sending message", e)
+
+        }
+
     }
 }
