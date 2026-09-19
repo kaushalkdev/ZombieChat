@@ -3,10 +3,10 @@ package com.example.zombiechat.src.chat.data.models
 import com.google.firebase.Timestamp
 
 class LastChatModel(
-    val chatId: String,
-    val msg: String,
-    val userImage: String,
-    val userName: String,
-    val userId: String,
-    val msgTime: Timestamp
+    @JvmField val chatId: String,
+    @JvmField val msg: String,
+    @JvmField val userImage: String,
+    @JvmField val userName: String,
+    @JvmField val userId: String,
+    @JvmField val msgTime: Timestamp
 )
