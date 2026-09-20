@@ -6,8 +6,6 @@ import com.example.zombiechat.util.service.AuthService
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import org.koin.java.KoinJavaComponent.inject
-import javax.inject.Singleton
 
 interface AuthRepo {
 
@@ -20,9 +18,7 @@ interface AuthRepo {
     suspend fun getCurrentUser(): UserModel?
 }
 
-@Singleton
-class AuthRepoImpl : AuthRepo {
-    private val authService: AuthService by inject(AuthService::class.java)
+class AuthRepoImpl(private val authService: AuthService) : AuthRepo {
 
     private val userCollection =
         FirebaseFirestore.getInstance().collection(DbCollection.userCollection)

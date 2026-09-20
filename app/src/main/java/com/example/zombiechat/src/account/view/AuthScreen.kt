@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.zombiechat.src.home.view.screens.HomeActivity
 import com.example.zombiechat.R
-import com.example.zombiechat.src.account.data.repo.AuthRepoImpl
 import com.example.zombiechat.account.viewModel.AuthVM
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -18,19 +17,18 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AuthScreen : AppCompatActivity() {
     private var msignin: SignInButton? = null
     private var mGoogleSignInClient: GoogleSignInClient? = null
     private var mdialog: ProgressDialog? = null
-    private var authVM: AuthVM? = null
+    private val authVM: AuthVM by viewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
-
-        authVM = AuthVM(AuthRepoImpl())
 
 
         //progress Dialog
@@ -48,7 +46,7 @@ class AuthScreen : AppCompatActivity() {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
         msignin?.setOnClickListener(View.OnClickListener {
-            if (authVM?.currentUser?.value == null) {
+            if (authVM.currentUser.value == null) {
 
                 mGoogleSignInClient!!.signOut().addOnSuccessListener {
                     val signInIntent = mGoogleSignInClient!!.signInIntent
@@ -67,14 +65,14 @@ class AuthScreen : AppCompatActivity() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
 
-        authVM?.currentUser?.observe(this) {
+        authVM.currentUser.observe(this) {
             if (it != null) {
                 val mainIntent = Intent(this@AuthScreen, HomeActivity::class.java)
                 startActivity(mainIntent)
                 finish()
             }
         }
-        if (authVM?.isLoggedIn() == true) {
+        if (authVM.isLoggedIn() == true) {
             val mainIntent = Intent(this@AuthScreen, HomeActivity::class.java)
             startActivity(mainIntent)
             finish()
@@ -98,7 +96,7 @@ class AuthScreen : AppCompatActivity() {
 
                 lifecycleScope.launch {
                     try {
-                        authVM?.signInWith(credential)
+                        authVM.signInWith(credential)
 
                     } catch (e: Exception) {
 

@@ -8,17 +8,12 @@ import com.example.zombiechat.src.account.view.AuthScreen
 import com.example.zombiechat.src.home.view.screens.HomeActivity
 import com.example.zombiechat.util.service.AuthService
 import com.example.zombiechat.util.service.InjectorService
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
 
-    private val authService: AuthService by inject(AuthService::class.java)
+    private val authService: AuthService by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
