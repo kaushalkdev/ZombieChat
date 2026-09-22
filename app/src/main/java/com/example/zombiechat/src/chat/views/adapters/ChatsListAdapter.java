@@ -85,7 +85,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.Last
 
         public void setUserImage(String image) {
 
-            Picasso.with(itemView.getContext()).load(image).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(userImage);
+            Picasso.get().load(image).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(userImage);
         }
 
     }

@@ -82,7 +82,7 @@ public class RequestRecyclerAdaper extends RecyclerView.Adapter<RequestRecyclerA
         }
 
         public void setImage(String image) {
-            Picasso.with(itemView.getContext()).load(image).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(userimage);
+            Picasso.get().load(image).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(userimage);
         }
 
 
