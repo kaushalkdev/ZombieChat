@@ -11,19 +11,25 @@ import kotlinx.coroutines.launch
 class AuthVM(val repo: AuthRepo) : ViewModel() {
 
     var currentUser: MutableLiveData<UserModel?> = MutableLiveData()
+    val authError: MutableLiveData<String?> = MutableLiveData()
 
-    suspend fun signInWith(authCredential: AuthCredential) {
+    fun signInWith(authCredential: AuthCredential) {
         viewModelScope.launch {
-            repo.signIn(authCredential)
-            currentUser.postValue(repo.getCurrentUser())
+            try {
+                val success = repo.signIn(authCredential)
+                if (success) {
+                    val user = repo.getCurrentUser()
+                    currentUser.postValue(user)
+                } else {
+                    authError.postValue("Sign in failed. Please try again.")
+                }
+            } catch (e: Exception) {
+                authError.postValue(e.message ?: "An unexpected error occurred.")
+            }
         }
     }
-
-
 
     fun isLoggedIn(): Boolean {
         return repo.isLoggedIn()
     }
-
-
 }
