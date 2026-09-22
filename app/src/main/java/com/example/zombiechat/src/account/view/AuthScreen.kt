@@ -10,26 +10,29 @@ import androidx.lifecycle.lifecycleScope
 import com.example.zombiechat.src.home.view.screens.HomeActivity
 import com.example.zombiechat.R
 import com.example.zombiechat.account.viewModel.AuthVM
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 
 class AuthScreen : AppCompatActivity() {
     private var msignin: SignInButton? = null
-    private var mGoogleSignInClient: GoogleSignInClient? = null
     private var mdialog: ProgressDialog? = null
     private val authVM: AuthVM by viewModel()
-
+    private lateinit var credentialManager: CredentialManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
 
+        credentialManager = CredentialManager.create(this)
 
         //progress Dialog
         mdialog = ProgressDialog(this)
@@ -38,26 +41,53 @@ class AuthScreen : AppCompatActivity() {
         //google sign in
         msignin = findViewById(R.id.signinBtn)
 
-
-        // Configure Google Sign In
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-
         msignin?.setOnClickListener(View.OnClickListener {
             if (authVM.currentUser.value == null) {
-
-                mGoogleSignInClient!!.signOut().addOnSuccessListener {
-                    val signInIntent = mGoogleSignInClient!!.signInIntent
-                    startActivityForResult(signInIntent, RC_SIGN_IN)
-                }
-
-
+                signInWithGoogle()
             } else {
                 Toast.makeText(this@AuthScreen, "Already Signed in", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun signInWithGoogle() {
+        val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(getString(R.string.default_web_client_id))
+            .build()
+
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        lifecycleScope.launch {
+            try {
+                val result = credentialManager.getCredential(
+                    context = this@AuthScreen,
+                    request = request
+                )
+                handleSignIn(result)
+            } catch (e: GetCredentialException) {
+                Toast.makeText(this@AuthScreen, "Error: " + e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun handleSignIn(result: GetCredentialResponse) {
+        val credential = result.credential
+
+        if (credential is GoogleIdTokenCredential) {
+            val idToken = credential.idToken
+            val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+            
+            lifecycleScope.launch {
+                try {
+                    authVM.signInWith(firebaseCredential)
+                } catch (e: Exception) {
+                    Toast.makeText(this@AuthScreen, "Error: " + e.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
 
@@ -83,38 +113,9 @@ class AuthScreen : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)
-                val token = account.idToken
-                val credential = GoogleAuthProvider.getCredential(token, null)
-
-                lifecycleScope.launch {
-                    try {
-                        authVM.signInWith(credential)
-
-                    } catch (e: Exception) {
-
-                        Toast.makeText(this@AuthScreen, "Error: " + e.message, Toast.LENGTH_SHORT)
-                            .show()
-
-                    }
-                }
-
-
-            } catch (e: Exception) {
-                Toast.makeText(this, "Error: " + task.exception?.message, Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     companion object {
         private const val TAG = "Signin"
-        private const val RC_SIGN_IN = 123
     }
 }
