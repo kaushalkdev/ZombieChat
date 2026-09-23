@@ -1,0 +1,107 @@
+[versions]
+agp = "9.4.1"
+kotlin = "2.4.20"
+google-services = "4.5.0"
+crashlytics-plugin = "3.0.8"
+perf-plugin = "2.0.2"
+foojay-resolver = "0.10.0"
+
+# Libraries
+firebase-firestore = "26.6.0"
+firebase-storage = "22.0.2"
+firebase-auth = "24.2.0"
+firebase-crashlytics = "20.1.1"
+firebase-core = "21.1.1"
+firebase-bom = "34.19.0"
+
+lifecycle = "2.11.0"
+appcompat = "1.8.0"
+activity = "1.13.0"
+constraintlayout = "2.2.2"
+material = "1.14.0"
+play-services-auth = "22.0.0"
+circleimageview = "3.1.0"
+firebase-ui-firestore = "9.1.1"
+picasso = "2.71828"
+credentials = "1.6.0"
+googleid = "1.2.1"
+koin = "4.2.2"
+
+# Test
+junit = "4.13.2"
+androidx-junit = "1.3.0"
+espresso = "3.7.0"
+
+[libraries]
+# AndroidX Core & UI
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# Lifecycle
+androidx-lifecycle-livedata-core = { group = "androidx.lifecycle", name = "lifecycle-livedata-core", version.ref = "lifecycle" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+
+# Credentials / Google Sign-In
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebase-firestore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebase-storage" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebase-auth" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebase-crashlytics" }
+firebase-core = { group = "com.google.firebase", name = "firebase-core", version.ref = "firebase-core" }
+firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
+firebase-ui-firestore = { group = "com.firebaseui", name = "firebase-ui-firestore", version.ref = "firebase-ui-firestore" }
+
+# Third-Party UI & Utils
+circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }
+picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso" }
+
+# Koin DI
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+
+# Testing
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+
+[bundles]
+androidx-lifecycle = [
+    "androidx-lifecycle-livedata-core",
+    "androidx-lifecycle-livedata-ktx",
+    "androidx-lifecycle-runtime-ktx",
+    "androidx-lifecycle-viewmodel-ktx"
+]
+androidx-credentials = [
+    "androidx-credentials",
+    "androidx-credentials-play-services-auth",
+    "googleid"
+]
+firebase-sdks = [
+    "firebase-firestore",
+    "firebase-storage",
+    "firebase-auth",
+    "firebase-crashlytics",
+    "firebase-core"
+]
+koin = [
+    "koin-android",
+    "koin-androidx-compose"
+]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics-plugin" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "perf-plugin" }
+foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay-resolver" }
