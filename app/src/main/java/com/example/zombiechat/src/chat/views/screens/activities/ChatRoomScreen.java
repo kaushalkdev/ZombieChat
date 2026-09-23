@@ -100,7 +100,7 @@ public class ChatRoomScreen extends AppCompatActivity {
 
         muserimage = findViewById(R.id.user_image);
         //setting image
-        Picasso.with(getApplicationContext()).load(otherUserImage).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(muserimage);
+        Picasso.get().load(otherUserImage).error(R.drawable.default_user).placeholder(R.drawable.default_user).into(muserimage);
 
 
         //button and edit text

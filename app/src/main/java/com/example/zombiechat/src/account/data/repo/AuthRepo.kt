@@ -6,8 +6,6 @@ import com.example.zombiechat.util.service.AuthService
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import org.koin.java.KoinJavaComponent.inject
-import javax.inject.Singleton
 
 interface AuthRepo {
 
@@ -20,9 +18,7 @@ interface AuthRepo {
     suspend fun getCurrentUser(): UserModel?
 }
 
-@Singleton
-class AuthRepoImpl : AuthRepo {
-    private val authService: AuthService by inject(AuthService::class.java)
+class AuthRepoImpl(private val authService: AuthService) : AuthRepo {
 
     private val userCollection =
         FirebaseFirestore.getInstance().collection(DbCollection.userCollection)
@@ -31,23 +27,23 @@ class AuthRepoImpl : AuthRepo {
     override suspend fun signIn(authCredential: AuthCredential): Boolean {
         try {
             val authResult = authService.signInWith(authCredential).await()
-            if (authResult.user == null) return false
-            if (!authResult.additionalUserInfo!!.isNewUser) return true
-            else {
-                val image = authResult.user?.photoUrl
-                val name = authResult.user?.displayName
+            val firebaseUser = authResult.user ?: return false
+
+            val userDoc = userCollection.document(firebaseUser.uid).get().await()
+            if (!userDoc.exists()) {
+                val image = firebaseUser.photoUrl?.toString() ?: ""
+                val name = firebaseUser.displayName ?: ""
                 val gender = "male"
                 val status = "Hey there i am using Zombie chat"
-                val userid = authResult.user?.uid
-                val user = UserModel(image.toString(), name.toString(), gender, status, userid)
+                val userid = firebaseUser.uid
+                val user = UserModel(image, name, gender, status, userid)
                 return createNewUser(user)
-
             }
-
+            return true
         } catch (e: Exception) {
+            e.printStackTrace()
             return false
         }
-
     }
 
     override suspend fun createNewUser(user: UserModel): Boolean {

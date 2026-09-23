@@ -48,7 +48,7 @@ class UserProfile : AppCompatActivity() {
             musername?.text = it.name
             muserstatus?.text = it.status
             musersex?.text = it.gender
-            Picasso.with(this).load(it.image).error(R.drawable.default_user)
+            Picasso.get().load(it.image).error(R.drawable.default_user)
                 .placeholder(R.drawable.default_user).into(muserimage)
         }
 

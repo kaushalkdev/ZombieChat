@@ -14,14 +14,14 @@ import com.example.zombiechat.friends.view.allUsers.AllusersActivity
 import com.example.zombiechat.src.home.view.adapters.HomePagerAdapter
 import com.example.zombiechat.util.service.AuthService
 import com.google.android.material.tabs.TabLayout
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.android.ext.android.inject
 
 class HomeActivity : AppCompatActivity() {
     private var mSectionPagerAdapter: HomePagerAdapter? = null
     private var mToolbar: Toolbar? = null
     private var viewPager: ViewPager? = null
     private var tablayout: TabLayout? = null
-    private val authService: AuthService by inject(AuthService::class.java)
+    private val authService: AuthService by inject()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
